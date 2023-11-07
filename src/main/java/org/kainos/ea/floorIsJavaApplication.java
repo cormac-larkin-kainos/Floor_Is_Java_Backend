@@ -3,6 +3,7 @@ package org.kainos.ea;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import org.kainos.ea.resources.TestController;
 
 public class floorIsJavaApplication extends Application<floorIsJavaConfiguration> {
 
@@ -23,7 +24,7 @@ public class floorIsJavaApplication extends Application<floorIsJavaConfiguration
     @Override
     public void run(final floorIsJavaConfiguration configuration,
                     final Environment environment) {
-        // TODO: implement application
+       environment.jersey().register(new TestController());
     }
 
 }
