@@ -14,7 +14,7 @@ public class floorIsJavaConfiguration extends Configuration {
     @JsonProperty("swagger")
     public SwaggerBundleConfiguration getSwagger() {
         swagger.setResourcePackage("org.kainos.ea.resources");
-        String[] schemes = {"http,", "https"};
+        String[] schemes = {"http", "https"};
         return swagger;
     }
 }
