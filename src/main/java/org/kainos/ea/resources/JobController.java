@@ -1,5 +1,6 @@
 package org.kainos.ea.resources;
 
+import io.swagger.annotations.Api;
 import org.kainos.ea.api.JobService;
 import org.kainos.ea.db.DatabaseConnector;
 import org.kainos.ea.db.JobDao;
@@ -11,6 +12,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+@Api("Floor is Java Job API")
 @Path("/api")
 public class JobController {
 
