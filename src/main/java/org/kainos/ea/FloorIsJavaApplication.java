@@ -5,8 +5,13 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import org.kainos.ea.resources.TestController;
 
-public class floorIsJavaApplication extends Application<floorIsJavaConfiguration> {
-
+public final class FloorIsJavaApplication
+        extends Application<floorIsJavaConfiguration> {
+    /**
+     * Main class method.
+     * @param args
+     * @throws Exception
+     */
     public static void main(final String[] args) throws Exception {
         new floorIsJavaApplication().run(args);
     }
@@ -17,8 +22,8 @@ public class floorIsJavaApplication extends Application<floorIsJavaConfiguration
     }
 
     @Override
-    public void initialize(final Bootstrap<floorIsJavaConfiguration> bootstrap) {
-        // TODO: application initialization
+    public void initialize(
+            final Bootstrap<floorIsJavaConfiguration> bootstrap) {
     }
 
     @Override

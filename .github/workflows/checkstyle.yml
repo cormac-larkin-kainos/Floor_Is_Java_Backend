@@ -1,0 +1,25 @@
+name: Checkstyle
+
+on: [push]
+
+jobs:
+  checkstyle:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+
+      - name: Run Checkstyle
+        run: |
+          mvn checkstyle:check
+          checkstyleExitCode=$?
+          if [ $checkstyleExitCode -ne 0 ]; then
+            echo "Checkstyle found issues. Please fix them before committing."
+            exit 1
+          fi
