@@ -11,22 +11,22 @@ import java.util.List;
 
 public class JobDao {
 
-    public List<Job> getAllJobs() throws SQLException {
+    public List<Job> getAllJobs(Connection connection) throws SQLException {
 
-        // Get database connection
-        Connection conn = DatabaseConnector.getConnection();
-        if(conn == null) {
+        // Check database connection
+        if(connection == null) {
             System.err.println("Failed to connect to database");
             throw new SQLException("Failed to connect to database");
         }
 
+        // Query the database for all jobs
         String selectQuery = "SELECT job_id, job_title FROM job";
 
-        PreparedStatement statement = conn.prepareStatement(selectQuery);
+        PreparedStatement statement = connection.prepareStatement(selectQuery);
 
         ResultSet results = statement.executeQuery();
 
-        // Create a list of jobs from the results
+        // Create a list of Job objects from the results
         List<Job> allJobs = new ArrayList<>();
         while(results.next()) {
             Job job = new Job(

@@ -13,13 +13,15 @@ import java.sql.SQLException;
 @Path("/api")
 public class TestController {
 
+    private final DatabaseConnector databaseConnector = new DatabaseConnector();
+
     @GET
     @Path("/test")
     @Produces(MediaType.APPLICATION_JSON)
     public Response testConnection() {
 
         try {
-            Connection conn = DatabaseConnector.getConnection();
+            Connection conn = databaseConnector.getConnection();
             if(conn != null) {
                 return Response.ok().entity("Database connection successful").build();
             }
