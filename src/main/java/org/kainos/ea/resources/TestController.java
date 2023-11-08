@@ -22,6 +22,8 @@ public final class TestController {
      * @return A JSON response indicating the success
      * or failure of the database connection.
      */
+    private final DatabaseConnector databaseConnector = new DatabaseConnector();
+
     @GET
     @Path("/test")
     @Produces(MediaType.APPLICATION_JSON)
@@ -33,6 +35,9 @@ public final class TestController {
                 return Response.ok()
                         .entity("Database connection successful")
                         .build();
+            Connection conn = databaseConnector.getConnection();
+            if(conn != null) {
+                return Response.ok().entity("Database connection successful").build();
             }
         } catch (SQLException e) {
             return Response.serverError()
