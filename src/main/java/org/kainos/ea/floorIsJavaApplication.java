@@ -33,8 +33,8 @@ public class FloorIsJavaApplication extends Application<FloorIsJavaConfiguration
     @Override
     public void run(final FloorIsJavaConfiguration configuration,
                     final Environment environment) {
-       environment.jersey().register(new TestController());
-       environment.jersey().register(new JobController());
+        environment.jersey().register(new TestController());
+        environment.jersey().register(new JobController());
     }
 
 }
