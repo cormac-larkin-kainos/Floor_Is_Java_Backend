@@ -46,9 +46,6 @@ public class JobControllerUnitTest {
         Assertions.assertEquals(response.getStatus(), 500);
         Assertions.assertEquals(response.getEntity(), "A database error occurred, failed to get jobs");
 
-
-
-
     }
 
 }
