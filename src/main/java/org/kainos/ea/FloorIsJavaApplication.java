@@ -7,14 +7,14 @@ import org.kainos.ea.resources.JobController;
 import org.kainos.ea.resources.TestController;
 
 public final class FloorIsJavaApplication
-        extends Application<floorIsJavaConfiguration> {
+        extends Application<FloorIsJavaConfiguration> {
     /**
      * Main class method.
      * @param args
      * @throws Exception
      */
     public static void main(final String[] args) throws Exception {
-        new floorIsJavaApplication().run(args);
+        new FloorIsJavaApplication().run(args);
     }
 
     @Override
@@ -24,14 +24,14 @@ public final class FloorIsJavaApplication
 
     @Override
     public void initialize(
-            final Bootstrap<floorIsJavaConfiguration> bootstrap) {
+            final Bootstrap<FloorIsJavaConfiguration> bootstrap) {
     }
 
     @Override
-    public void run(final floorIsJavaConfiguration configuration,
+    public void run(final FloorIsJavaConfiguration configuration,
                     final Environment environment) {
-       environment.jersey().register(new TestController());
-       environment.jersey().register(new JobController());
+        environment.jersey().register(new TestController());
+        environment.jersey().register(new JobController());
     }
 
 }

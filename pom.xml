@@ -223,6 +223,9 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <configLocation>checkstyle.xml</configLocation> <!-- Specify your Checkstyle configuration file here -->
+                </configuration>
             </plugin>
         </plugins>
     </build>

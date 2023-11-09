@@ -1,6 +1,7 @@
 package org.kainos.ea.resources;
 
 import org.kainos.ea.db.DatabaseConnector;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -23,21 +24,17 @@ public final class TestController {
      * or failure of the database connection.
      */
     private final DatabaseConnector databaseConnector = new DatabaseConnector();
-
     @GET
     @Path("/test")
     @Produces(MediaType.APPLICATION_JSON)
     public Response testConnection() {
 
         try {
-            Connection conn = DatabaseConnector.getConnection();
+            Connection conn = databaseConnector.getConnection();
             if (conn != null) {
                 return Response.ok()
                         .entity("Database connection successful")
                         .build();
-            Connection conn = databaseConnector.getConnection();
-            if(conn != null) {
-                return Response.ok().entity("Database connection successful").build();
             }
         } catch (SQLException e) {
             return Response.serverError()
