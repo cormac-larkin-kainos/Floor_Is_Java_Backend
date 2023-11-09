@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+        "-//Puppy Crawl//DTD Check Configuration 1.3//EN"
+        "https://checkstyle.org/dtds/configuration_1_3.dtd">
+<module name="Checker">
+    <module name="TreeWalker">
+        <module name="JavadocType">
+            <property name="severity" value="ignore"/>
+        </module>
+
+        <module name="Indentation">
+            <property name="basicOffset" value="4"/>
+        </module>
+
+        <!-- No need for Javadoc -->
+        <module name="JavadocMethod">
+            <property name="severity" value="ignore"/>
+        </module>
+
+        <module name="JavadocVariable">
+            <property name="severity" value="ignore"/>
+        </module>
+    </module>
+</module>

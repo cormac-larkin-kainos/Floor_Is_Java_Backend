@@ -3,13 +3,14 @@ package org.kainos.ea;
 import io.dropwizard.Configuration;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
-import javax.validation.constraints.*;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
-public class floorIsJavaConfiguration extends Configuration {
+public class FloorIsJavaConfiguration extends Configuration {
     @Valid
     @NotNull
-    private final SwaggerBundleConfiguration swagger = new SwaggerBundleConfiguration();
+    private final SwaggerBundleConfiguration swagger
+            = new SwaggerBundleConfiguration();
 
     @JsonProperty("swagger")
     public SwaggerBundleConfiguration getSwagger() {

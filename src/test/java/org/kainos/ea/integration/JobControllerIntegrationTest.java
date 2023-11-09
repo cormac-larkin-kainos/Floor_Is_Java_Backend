@@ -3,9 +3,8 @@ package org.kainos.ea.integration;
 import io.dropwizard.configuration.ResourceConfigurationSourceProvider;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.kainos.ea.cli.Job;
-import org.kainos.ea.floorIsJavaApplication;
-import org.kainos.ea.floorIsJavaConfiguration;
+import org.kainos.ea.FloorIsJavaApplication;
+import org.kainos.ea.FloorIsJavaConfiguration;
 import io.dropwizard.testing.junit5.DropwizardAppExtension;
 import io.dropwizard.testing.junit5.DropwizardExtensionsSupport;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,8 +15,8 @@ import java.util.List;
 @ExtendWith(DropwizardExtensionsSupport.class)
 public class JobControllerIntegrationTest {
 
-    static final DropwizardAppExtension<floorIsJavaConfiguration> APP = new DropwizardAppExtension<>(
-            floorIsJavaApplication.class, null,
+    static final DropwizardAppExtension<FloorIsJavaConfiguration> APP = new DropwizardAppExtension<>(
+            FloorIsJavaApplication.class, null,
             new ResourceConfigurationSourceProvider()
     );
 

@@ -15,16 +15,23 @@ import javax.ws.rs.core.Response;
 @Api("Floor is Java Job API")
 @Path("/api")
 public class JobController {
-
+    /**
+     * instantiate JobService class.
+     */
     private final JobService jobService;
+    /**
+     * instantiate DatabaseConnector class.
+     */
+    private final DatabaseConnector databaseConnector;
+
 
     public JobController() {
-        DatabaseConnector databaseConnector = new DatabaseConnector();
+        databaseConnector = new DatabaseConnector();
         jobService = new JobService(new JobDao(), databaseConnector);
     }
 
     public JobController(JobService jobService) {
-        DatabaseConnector databaseConnector = new DatabaseConnector();
+        databaseConnector = new DatabaseConnector();
         this.jobService = jobService;
     }
 

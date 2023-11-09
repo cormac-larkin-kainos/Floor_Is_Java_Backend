@@ -14,7 +14,7 @@ public class JobDao {
     public List<Job> getAllJobs(Connection connection) throws SQLException {
 
         // Check database connection
-        if(connection == null) {
+        if (connection == null) {
             System.err.println("Failed to connect to database");
             throw new SQLException("Failed to connect to database");
         }
@@ -28,7 +28,7 @@ public class JobDao {
 
         // Create a list of Job objects from the results
         List<Job> allJobs = new ArrayList<>();
-        while(results.next()) {
+        while (results.next()) {
             Job job = new Job(
                     results.getInt("job_id"),
                     results.getString("job_title")
