@@ -45,9 +45,7 @@ You can build the api in a number of ways using docker and integrate it with a d
 Ensure the environment variables are correct for your chosen db or enter these as additional arguments on the docker build command.
 
 
-Run "docker build --build-arg DB_HOST=${DB_HOST} --build-arg DB_PASSWORD=${DB_PASSWORD} --build-arg DB_USERNAME=${DB_USERNAME} --build-arg DB_NAME=${DB_NAME} -t <your-image-name> .
-
- ." from your src directory. This will read from your docker file, build the environment required for the image, build your service and create the image locally.
+Run "docker build --build-arg DB_HOST=${DB_HOST} --build-arg DB_PASSWORD=${DB_PASSWORD} --build-arg DB_USERNAME=${DB_USERNAME} --build-arg DB_NAME=${DB_NAME} -t <your-image-name> ." from your src directory. This will read from your docker file, build the environment required for the image, build your service and create the image locally.
 
 Use "docker images" to verify your image is available after running the above command.
 
