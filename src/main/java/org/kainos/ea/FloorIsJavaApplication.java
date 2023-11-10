@@ -6,7 +6,6 @@ import io.dropwizard.setup.Environment;
 import io.federecio.dropwizard.swagger.SwaggerBundle;
 import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
 import org.kainos.ea.resources.JobController;
-import org.kainos.ea.resources.TestController;
 
 public class FloorIsJavaApplication extends Application<FloorIsJavaConfiguration> {
 
@@ -32,7 +31,6 @@ public class FloorIsJavaApplication extends Application<FloorIsJavaConfiguration
     @Override
     public void run(final FloorIsJavaConfiguration configuration,
                     final Environment environment) {
-        environment.jersey().register(new TestController());
         environment.jersey().register(new JobController());
     }
 
