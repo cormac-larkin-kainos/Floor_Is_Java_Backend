@@ -1,5 +1,5 @@
 ALTER TABLE job
-ADD job_spec_summary TEXT, job_url varchar(255);
+ADD job_spec_summary TEXT, job_url TEXT;
 
 UPDATE job
 SET job_spec_summary =
