@@ -5,6 +5,7 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.federecio.dropwizard.swagger.SwaggerBundle;
 import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
+import org.kainos.ea.resources.AuthController;
 import org.kainos.ea.resources.JobController;
 
 public class FloorIsJavaApplication extends Application<FloorIsJavaConfiguration> {
@@ -32,6 +33,7 @@ public class FloorIsJavaApplication extends Application<FloorIsJavaConfiguration
     public void run(final FloorIsJavaConfiguration configuration,
                     final Environment environment) {
         environment.jersey().register(new JobController());
+        environment.jersey().register(new AuthController());
     }
 
 }
