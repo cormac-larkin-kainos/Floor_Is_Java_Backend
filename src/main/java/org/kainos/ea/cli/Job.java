@@ -8,6 +8,10 @@ public class Job {
     private String jobSpec;
     private String jobURL;
 
+    public Job() {
+
+    }
+
     public Job(int jobID, String title, String capability, String jobSpec, String jobURL) {
         this.jobID = jobID;
         this.title = title;
