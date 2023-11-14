@@ -20,7 +20,9 @@ public class JobDao {
         }
 
         // Query the database for all jobs
-        String selectQuery = "SELECT job_id, job_title, job_spec_summary, job_URL FROM job";
+        String selectQuery = "SELECT job_id, job_title, job_spec_summary, job_URL, job_band_name" +
+                " FROM job " +
+                "INNER JOIN job_band USING (job_band_id)";
 
         PreparedStatement statement = connection.prepareStatement(selectQuery);
 
@@ -33,7 +35,8 @@ public class JobDao {
                     results.getInt("job_id"),
                     results.getString("job_title"),
                     results.getString("job_spec_summary"),
-                    results.getString("job_url")
+                    results.getString("job_url"),
+                    results.getString("job_band_name")
             );
             allJobs.add(job);
 

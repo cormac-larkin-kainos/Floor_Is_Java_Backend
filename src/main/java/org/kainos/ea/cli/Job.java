@@ -6,12 +6,14 @@ public class Job {
     private String title;
     private String jobSpec;
     private String jobURL;
+    private String jobBand;
 
-    public Job(int jobID, String title, String jobSpec, String jobURL) {
+    public Job(int jobID, String title, String jobSpec, String jobURL, String jobBand) {
         this.jobID = jobID;
         this.title = title;
         this.jobSpec = jobSpec;
         this.jobURL = jobURL;
+        this.jobBand = jobBand;
     }
 
     public int getJobID() {
@@ -46,6 +48,12 @@ public class Job {
         this.jobURL = jobURL;
     }
 
+    public String getJobBand() {
+        return jobBand;
+    }
 
+    public void setJobBand(String jobBand) {
+        this.jobBand = jobBand;
+    }
 
 }
