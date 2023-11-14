@@ -20,7 +20,8 @@ public class JobDao {
         }
 
         // Query the database for all jobs
-        String selectQuery = "SELECT job_id, job_title, job_spec_summary, job_URL FROM job";
+        String selectQuery = "SELECT job_id, job_title, capability.name AS capability, job_spec_summary, job_URL FROM job " +
+                "INNER JOIN capability USING (capability_id)";
 
         PreparedStatement statement = connection.prepareStatement(selectQuery);
 
@@ -32,6 +33,7 @@ public class JobDao {
             Job job = new Job(
                     results.getInt("job_id"),
                     results.getString("job_title"),
+                    results.getString("capability"),
                     results.getString("job_spec_summary"),
                     results.getString("job_url")
             );
