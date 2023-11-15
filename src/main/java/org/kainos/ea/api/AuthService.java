@@ -14,13 +14,9 @@ public class AuthService {
     }
 
     public String login(Login login) throws FailedToLoginException, FailedToGenerateTokenException {
+
         if(authDao.validLogin(login)) {
-            try {
                 return authDao.generateToken(login.getUsername());
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-                throw new FailedToGenerateTokenException();
-            }
         }
         throw new FailedToLoginException();
     }
