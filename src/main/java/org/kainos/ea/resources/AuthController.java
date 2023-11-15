@@ -3,7 +3,12 @@ package org.kainos.ea.resources;
 import io.dropwizard.auth.Auth;
 import io.swagger.annotations.Api;
 import org.kainos.ea.api.AuthService;
+import org.kainos.ea.api.JobService;
+import org.kainos.ea.db.AuthDao;
 import org.kainos.ea.cli.Login;
+import org.kainos.ea.db.AuthDao;
+import org.kainos.ea.db.DatabaseConnector;
+import org.kainos.ea.db.JobDao;
 import org.kainos.ea.exception.AuthenticationException;
 import org.kainos.ea.exception.FailedToGenerateTokenException;
 import org.kainos.ea.exception.FailedToLoginException;
@@ -17,7 +22,11 @@ import javax.ws.rs.core.Response;
 @Api("floorIsJava Authentication API")
 @Path("/api")
 public class AuthController {
-    private AuthService authService = new AuthService();
+    private final AuthService authService;
+
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
 
     @POST
     @Path("/login")
@@ -27,7 +36,7 @@ public class AuthController {
             return Response.ok(authService.login(login)).build();
         } catch(FailedToLoginException e) {
             System.err.println(e.getMessage());
-            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+            return Response.status(Response.Status.UNAUTHORIZED).entity(e.getMessage()).build();
         } catch(FailedToGenerateTokenException e){
             System.err.println(e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();

@@ -5,13 +5,14 @@ import org.kainos.ea.cli.Login;
 import org.kainos.ea.exception.AuthenticationException;
 import org.kainos.ea.exception.FailedToGenerateTokenException;
 
+
 import java.sql.*;
 import java.util.Date;
 import java.util.UUID;
 
 public class AuthDao {
 
-    private DatabaseConnector databaseConnector = new DatabaseConnector();
+    private final DatabaseConnector databaseConnector = new DatabaseConnector();
 
     public boolean validLogin(Login login) {
         try {
@@ -34,13 +35,13 @@ public class AuthDao {
     }
 
     public String generateToken(String username) throws SQLException {
-
+            // generate JWT token not a string
             String token = UUID.randomUUID().toString();
             Date expiry = DateUtils.addHours(new Date(), 8);
 
             Connection c = databaseConnector.getConnection();
 
-            String insertStatement = "INSERT INTO Token(username,token, expiry) VALUES(?,?,?)";
+            String insertStatement = "INSERT INTO token(username, token, expiry) VALUES(?,?,?)";
 
             PreparedStatement st = c.prepareStatement(insertStatement);
 

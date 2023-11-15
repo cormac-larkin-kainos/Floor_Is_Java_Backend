@@ -22,7 +22,7 @@ public class DatabaseConnector {
      * @return The database connection.
      * @throws SQLException If an error occurs while connecting to the database.
      */
-    public static Connection getConnection() throws SQLException {
+    public Connection getConnection() throws SQLException {
         String user;
         String password;
         String host;
