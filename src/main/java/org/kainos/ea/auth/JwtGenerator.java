@@ -15,17 +15,10 @@ import com.auth0.jwt.algorithms.Algorithm;
 
 public class JwtGenerator {
 
-    public static final KeyPair KEYPAIR;
-
-    static {
-        try {
-            KEYPAIR = KeyPairGenerator.getInstance("RSA").generateKeyPair();
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-    }
+    public static KeyPair KEYPAIR;
 
     public JwtGenerator() throws NoSuchAlgorithmException {
+        KEYPAIR = KeyPairGenerator.getInstance("RSA").generateKeyPair();
     }
 
     /**
@@ -40,7 +33,7 @@ public class JwtGenerator {
                 .withIssuer("https://www.floor-is-java.com") //placeholder url
                 .withSubject(username)
                 .withClaim("jti", UUID.randomUUID().toString())
-                .withExpiresAt(Date.from(Instant.now().plusSeconds(1800))) // Token expires after 30 minutes
+                .withExpiresAt(Date.from(Instant.now().plusSeconds(28800))) // Token expires after 8 hours
                 .withIssuedAt(Date.from(Instant.now()));
 
         return tokenBuilder.sign(Algorithm.RSA256(((RSAPublicKey) KEYPAIR.getPublic()), ((RSAPrivateKey)  KEYPAIR.getPrivate())));

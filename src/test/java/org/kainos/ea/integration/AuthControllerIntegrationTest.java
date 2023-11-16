@@ -23,9 +23,19 @@ public class AuthControllerIntegrationTest {
             FloorIsJavaApplication.class, null,
             new ResourceConfigurationSourceProvider()
     );
+
     @Test
     void loginWithValidLogin_ShouldReturnLogin() {
-        Login testLogin = new Login("admin", "admin");
+
+        String userName = System.getenv("TEST_USERNAME");;
+        String password = System.getenv("TEST_PASSWORD");
+
+        if (userName == null || password == null) {
+            throw new IllegalArgumentException(
+                    "Environment variables not set.");
+        }
+
+        Login testLogin = new Login(userName, password);
 
         Response response = APP.client().target("http://localhost:8080/api/login")
                 .request()
@@ -33,6 +43,7 @@ public class AuthControllerIntegrationTest {
 
         Assertions.assertEquals(200, response.getStatus());
     }
+
     @Test
     void loginWithinValidLogin_ShouldReturnUnauthorisedError() {
         Login testLogin = new Login("notAdmin", "admin");
