@@ -6,6 +6,7 @@ import io.dropwizard.setup.Environment;
 import io.federecio.dropwizard.swagger.SwaggerBundle;
 import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
 import org.kainos.ea.api.AuthService;
+import org.kainos.ea.auth.JwtGenerator;
 import org.kainos.ea.db.AuthDao;
 import org.kainos.ea.resources.AuthController;
 import org.kainos.ea.resources.JobController;
@@ -35,9 +36,9 @@ public class FloorIsJavaApplication extends Application<FloorIsJavaConfiguration
 
     @Override
     public void run(final FloorIsJavaConfiguration configuration,
-                    final Environment environment) {
+                    final Environment environment) throws NoSuchAlgorithmException {
         environment.jersey().register(new JobController());
-        environment.jersey().register(new AuthController(new AuthService(new AuthDao())));
+        environment.jersey().register(new AuthController(new AuthService(new AuthDao(), new JwtGenerator())));
     }
 
 }

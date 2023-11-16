@@ -31,7 +31,7 @@ public class JwtValidator {
             // Check that the token came from an allowed issuer
             if (!allowedIssuers.contains(jwt.getIssuer())) {
                 System.err.println("Unknown Token Issuer: " + jwt.getIssuer());
-                throw new InvalidParameterException("Unknown Token Issuer " +  jwt.getIssuer());
+                throw new InvalidParameterException("Unknown Token Issuer: " +  jwt.getIssuer());
             }
 
             // Validate the JWT using the public/private keys from the JWTGenerator

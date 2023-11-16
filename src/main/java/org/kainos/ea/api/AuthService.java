@@ -1,46 +1,35 @@
 package org.kainos.ea.api;
+
 import org.kainos.ea.auth.JwtGenerator;
 import org.kainos.ea.auth.JwtValidator;
 import org.kainos.ea.cli.Login;
 import org.kainos.ea.db.AuthDao;
 import org.kainos.ea.exception.FailedToLoginException;
 import org.kainos.ea.exception.FailedToGenerateTokenException;
+import org.kainos.ea.exception.InvalidCredentialsException;
 
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 
 public class AuthService {
-    private final AuthDao authDao;
 
-    public AuthService(AuthDao authDao) {
+    private final AuthDao authDao;
+    private final JwtGenerator jwtGenerator;
+
+    public AuthService(AuthDao authDao, JwtGenerator jwtGenerator) {
         this.authDao = authDao;
+        this.jwtGenerator = jwtGenerator;
     }
 
-    public String login(Login login) throws FailedToLoginException, FailedToGenerateTokenException {
+    public String login(Login login) throws FailedToLoginException, InvalidCredentialsException, FailedToGenerateTokenException {
 
-        if(authDao.validLogin(login)) {
-
-            // Generate a new JWT and insert the username into the payload
-            try {
-                JwtGenerator jwtGenerator = new JwtGenerator();
-                String token = jwtGenerator.generateJwt(login.getUsername());
-
-                try {
-                    if (new JwtValidator().validateToken(token)) {
-                        System.err.println("VALID TOKEN");
-                    } else {
-                        System.err.println("TOKEN INVALID");
-                    }
-                } catch (Exception e) {
-                    System.err.println(e.getMessage());
-                }
-
-
-                return token;
-            } catch (NoSuchAlgorithmException e) {
-                throw new FailedToGenerateTokenException();
+        try {
+            if (authDao.validLogin(login)) {
+                return jwtGenerator.generateJwt(login.getUsername());
             }
+            throw new InvalidCredentialsException();
+        } catch (SQLException e) {
+            throw new FailedToLoginException();
         }
-        throw new FailedToLoginException();
     }
 }
