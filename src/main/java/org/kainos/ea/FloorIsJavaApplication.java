@@ -10,6 +10,8 @@ import org.kainos.ea.db.AuthDao;
 import org.kainos.ea.resources.AuthController;
 import org.kainos.ea.resources.JobController;
 
+import java.security.NoSuchAlgorithmException;
+
 public class FloorIsJavaApplication extends Application<FloorIsJavaConfiguration> {
 
     public static void main(final String[] args) throws Exception {

@@ -51,7 +51,6 @@ public class AuthServiceUnitTest {
         Mockito.when(authDao.validLogin(testLogin)).thenReturn(true);
         Mockito.when(authDao.generateToken(testLogin.getUsername())).thenThrow(SQLException.class);
 
-
         assertThrows(FailedToGenerateTokenException.class, () -> authService.login(testLogin));
 
     }

@@ -7,7 +7,6 @@ import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.time.Instant;
 import java.util.Date;
-import java.util.Map;
 import java.util.UUID;
 
 import com.auth0.jwt.JWT;
@@ -16,26 +15,35 @@ import com.auth0.jwt.algorithms.Algorithm;
 
 public class JwtGenerator {
 
-    private KeyPairGenerator keyPairGenerator;
-    private KeyPair keyPair;
+    public static final KeyPair KEYPAIR;
 
-    public JwtGenerator() throws NoSuchAlgorithmException {
-        keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-        keyPairGenerator.initialize(2048);
-        keyPair = keyPairGenerator.generateKeyPair();
+    static {
+        try {
+            KEYPAIR = KeyPairGenerator.getInstance("RSA").generateKeyPair();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public String generateJwt(Map<String, String> payload) throws Exception {
+    public JwtGenerator() throws NoSuchAlgorithmException {
+    }
+
+    /**
+     * Generates a JWT token for a specified user
+     *
+     * @param username
+     * @return The JWT token as a String
+     */
+    public String generateJwt(String username) {
 
         Builder tokenBuilder = JWT.create()
-                .withIssuer("https://floor-is-java")//placeholder url
+                .withIssuer("https://www.floor-is-java.com") //placeholder url
+                .withSubject(username)
                 .withClaim("jti", UUID.randomUUID().toString())
-                .withExpiresAt(Date.from(Instant.now().plusSeconds(300)))
+                .withExpiresAt(Date.from(Instant.now().plusSeconds(1800))) // Token expires after 30 minutes
                 .withIssuedAt(Date.from(Instant.now()));
 
-        payload.entrySet().forEach(action -> tokenBuilder.withClaim(action.getKey(), action.getValue()));
-
-        return  tokenBuilder.sign(Algorithm.RSA256(((RSAPublicKey) keyPair.getPublic()), ((RSAPrivateKey) keyPair.getPrivate())));
+        return tokenBuilder.sign(Algorithm.RSA256(((RSAPublicKey) KEYPAIR.getPublic()), ((RSAPrivateKey)  KEYPAIR.getPrivate())));
     }
 
 }
