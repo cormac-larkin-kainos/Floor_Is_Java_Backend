@@ -7,17 +7,19 @@ public class Job {
     private String capability;
     private String jobSpec;
     private String jobURL;
+    private String jobBand;
 
     public Job() {
 
     }
 
-    public Job(int jobID, String title, String capability, String jobSpec, String jobURL) {
+    public Job(int jobID, String title, String capability, String jobSpec, String jobURL, String jobBand) {
         this.jobID = jobID;
         this.title = title;
         this.capability = capability;
         this.jobSpec = jobSpec;
         this.jobURL = jobURL;
+        this.jobBand = jobBand;
     }
 
     public int getJobID() {
@@ -60,6 +62,12 @@ public class Job {
         this.jobURL = jobURL;
     }
 
+    public String getJobBand() {
+        return jobBand;
+    }
 
+    public void setJobBand(String jobBand) {
+        this.jobBand = jobBand;
+    }
 
 }
