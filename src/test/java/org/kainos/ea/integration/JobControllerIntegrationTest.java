@@ -45,7 +45,6 @@ public class JobControllerIntegrationTest {
             Assertions.assertNotNull(job.getJobURL());
             Assertions.assertNotNull(job.getJobSpec());
             Assertions.assertNotNull(job.getCapability());
-            Assertions.assertNotNull(job.getJobBand());
         }
 
     }
