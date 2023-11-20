@@ -18,17 +18,14 @@ public class ResponsibilityService {
         this.databaseConnector = databaseConnector;
     }
 
-    public List<Responsibility> getAllResponsibilities() throws FailedToGetResponsibilitiesException {
-        try {
-            return responsibilityDao.getAllResponsibilities(databaseConnector.getConnection());
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-            throw new FailedToGetResponsibilitiesException();
-        }
-    }
-
     public List<Responsibility> getResponsibilitiesForJob(int jobId) throws FailedToGetResponsibilitiesException {
         try {
+            // Check if jobId exists in the database before calling the dao
+            if (!responsibilityDao.doesJobExist(databaseConnector.getConnection(), jobId)) {
+                throw new FailedToGetResponsibilitiesException();
+            }
+
+            // If job exists, proceed to get responsibilities
             return responsibilityDao.getResponsibilitiesForJob(databaseConnector.getConnection(), jobId);
         } catch (SQLException e) {
             System.err.println(e.getMessage());

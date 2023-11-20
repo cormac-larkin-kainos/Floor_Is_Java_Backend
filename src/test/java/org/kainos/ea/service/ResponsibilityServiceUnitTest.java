@@ -27,42 +27,55 @@ public class ResponsibilityServiceUnitTest {
     ResponsibilityService responsibilityService = new ResponsibilityService(responsibilityDao, databaseConnector);
     Connection connection;
 
+
     @Test
-    void getAllResponsibilities_shouldReturnListOfResponsibilities_whenDaoReturnsListOfResponsibilities()
-            throws SQLException, FailedToGetResponsibilitiesException {
+    public void getResponsibilitiesForJob_shouldReturnListOfResponsibilities_whenDaoReturnsListOfResponsibilities() throws FailedToGetResponsibilitiesException, SQLException {
 
-        Responsibility sampleResponsibility1 = new Responsibility(1, "Interacting with customers");
-        Responsibility sampleResponsibility2 = new Responsibility(2, "Leading teams");
-        Responsibility sampleResponsibility3 = new Responsibility(3, "Mentoring those around you");
+        //sample jobId
+        int jobId = 1;
+        //sample responsibilities that align with sample jobId
+        Responsibility resSample1 = new Responsibility(1, "Developing high quality solutions which delight our customers and impact the lives of users worldwide");
+        Responsibility resSample2 = new Responsibility(2, "Making sound, reasoned decisions");
+        Responsibility resSample3 = new Responsibility(3, "Learning about new technologies and approaches");
+        Responsibility resSample4 = new Responsibility(4, "Mentoring those around you");
 
-        List<Responsibility> expectedResult = Arrays.asList(
-                sampleResponsibility1, sampleResponsibility2, sampleResponsibility3);
+        //add sample responsibilities to a list
+        List<Responsibility> expectedResult = Arrays.asList(resSample1, resSample2, resSample3, resSample4);
 
+        //get resDao result
         Mockito.when(databaseConnector.getConnection()).thenReturn(connection);
-        Mockito.when(responsibilityDao.getAllResponsibilities(connection)).thenReturn(expectedResult);
+        Mockito.when(responsibilityDao.doesJobExist(connection, jobId)).thenReturn(true);
+        Mockito.when(responsibilityDao.getResponsibilitiesForJob(connection, jobId)).thenReturn(expectedResult);
 
-        List<Responsibility> result = responsibilityService.getAllResponsibilities();
+        //get resService result
+        List<Responsibility> result = responsibilityService.getResponsibilitiesForJob(jobId);
 
-        assertEquals(result, expectedResult);
+        //test that the same list is returned from ResDao and ResService
+        assertEquals(expectedResult, result);
     }
 
     @Test
-    void getAllResponsibilities_shouldThrowFailedToGetResponsibilitiesException_whenDaoThrowsSQLException()
-            throws SQLException {
-        Mockito.when(databaseConnector.getConnection()).thenReturn(connection);
-        Mockito.when(responsibilityDao.getAllResponsibilities(connection)).thenThrow(SQLException.class);
+    public void getResponsibilitiesForJob_shouldThrowFailedToGetResponsibilitiesException_whenDaoThrowsSQLException() throws SQLException {
+        // sample job id
+        int jobId = 1;
+
+        // simulation of job not found in the database
+        Mockito.when(responsibilityDao.doesJobExist(connection, jobId)).thenReturn(false);
 
         assertThrows(FailedToGetResponsibilitiesException.class,
-                () -> responsibilityService.getAllResponsibilities());
+                () -> responsibilityService.getResponsibilitiesForJob(jobId));
     }
 
+
     @Test
-    void getAllResponsibilities_shouldThrowFailedToGetResponsibilitiesException_whenDatabaseConnectorThrowsSQLException()
-            throws SQLException {
+    public void getResponsibilitiesForJob_shouldThrowFailedToGetResponsibilitiesException_whenDatabaseConnectorThrowsSQLException() throws SQLException {
+        // sample job id
+        int jobId = 1;
+
         Mockito.when(databaseConnector.getConnection()).thenThrow(SQLException.class);
 
         assertThrows(FailedToGetResponsibilitiesException.class,
-                () -> responsibilityService.getAllResponsibilities());
+                () -> responsibilityService.getResponsibilitiesForJob(jobId));
     }
 
 }

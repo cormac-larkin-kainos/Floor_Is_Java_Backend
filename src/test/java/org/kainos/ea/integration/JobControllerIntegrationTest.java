@@ -13,7 +13,6 @@ import org.kainos.ea.cli.Job;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.lang.reflect.Field;
 import java.util.List;
 
 @ExtendWith(DropwizardExtensionsSupport.class)

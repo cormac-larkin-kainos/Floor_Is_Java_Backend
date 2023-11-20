@@ -33,23 +33,14 @@ public class ResponsibilityController {
     }
 
     @GET
-    @Path("/responsibilities")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllResponsibilities() {
-        try {
-            List<Responsibility> responsibilities = responsibilityService.getAllResponsibilities();
-            return Response.ok(responsibilities).build();
-        } catch (FailedToGetResponsibilitiesException e) {
-            return Response.serverError().entity(e.getMessage()).build();
-        }
-    }
-
-    @GET
     @Path("/jobs/{jobId}/responsibilities")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getResponsibilitiesForJob(@PathParam("jobId") int jobId) {
         try {
             List<Responsibility> responsibilities = responsibilityService.getResponsibilitiesForJob(jobId);
+            if (responsibilities.isEmpty()) {
+                return Response.status(Response.Status.NOT_FOUND).entity("Job with ID " + jobId + " not found").build();
+            }
             return Response.ok(responsibilities).build();
         } catch (FailedToGetResponsibilitiesException e) {
             return Response.serverError().entity(e.getMessage()).build();

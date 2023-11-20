@@ -17,37 +17,41 @@ public class ResponsibilityControllerUnitTest {
     ResponsibilityService responsibilityService = Mockito.mock(ResponsibilityService.class);
 
     @Test
-    void getAllResponsibilities_shouldReturn200StatusCodeAndListOfResponsibilities_whenServiceReturnsListOfResponsibilities() throws FailedToGetResponsibilitiesException {
+    void getResponsibilitiesForJob_shouldReturn200StatusCodeAndListOfResponsibilities_whenServiceReturnsListOfJobResponsibilities() throws FailedToGetResponsibilitiesException {
 
-        Responsibility sampleResponsibility1 = new Responsibility(1, "Interacting with customers");
-        Responsibility sampleResponsibility2 = new Responsibility(2, "Leading teams");
-        Responsibility sampleResponsibility3 = new Responsibility(3, "Mentoring those around you");
+        //sample jobId
+        int jobId = 1;
+        //sample responsibilities that align with sample jobId
+        Responsibility resSample1 = new Responsibility(1, "Developing high quality solutions which delight our customers and impact the lives of users worldwide");
+        Responsibility resSample2 = new Responsibility(2, "Making sound, reasoned decisions");
+        Responsibility resSample3 = new Responsibility(3, "Learning about new technologies and approaches");
+        Responsibility resSample4 = new Responsibility(4, "Mentoring those around you");
 
-        List<Responsibility> expectedResponseBody = Arrays.asList(
-                sampleResponsibility1, sampleResponsibility2, sampleResponsibility3);
+        //add sample responsibilities to a list
+        List<Responsibility> expectedResponseBody = Arrays.asList(resSample1, resSample2, resSample3, resSample4);
 
-        Mockito.when(responsibilityService.getAllResponsibilities()).thenReturn(expectedResponseBody);
+        Mockito.when(responsibilityService.getResponsibilitiesForJob(jobId)).thenReturn(expectedResponseBody);
         ResponsibilityController responsibilityController = new ResponsibilityController(responsibilityService);
 
-        Response response = responsibilityController.getAllResponsibilities();
+        Response response = responsibilityController.getResponsibilitiesForJob(jobId);
 
         Assertions.assertEquals(response.getStatus(), 200);
         Assertions.assertEquals(response.getEntity(), expectedResponseBody);
     }
 
     @Test
-    void getAllResponsibilities_shouldReturn500StatusCodeAndErrorMessage_whenServiceThrowsFailedToGetResponsibilitiesException() throws FailedToGetResponsibilitiesException {
+    void getResponsibilitiesForJob_shouldReturn500StatusCodeAndErrorMessage_whenServiceThrowsFailedToGetResponsibilitiesException() throws FailedToGetResponsibilitiesException {
 
-        Mockito.when(responsibilityService.getAllResponsibilities()).thenThrow(FailedToGetResponsibilitiesException.class);
+        //sample jobId
+        int jobId = 1;
+
+        Mockito.when(responsibilityService.getResponsibilitiesForJob(jobId)).thenThrow(FailedToGetResponsibilitiesException.class);
         ResponsibilityController responsibilityController = new ResponsibilityController(responsibilityService);
 
-        Response response = responsibilityController.getAllResponsibilities();
+        Response response = responsibilityController.getResponsibilitiesForJob(jobId);
 
         Assertions.assertEquals(response.getStatus(), 500);
         Assertions.assertEquals(response.getEntity(), "A database error occurred, failed to get responsibilities");
 
     }
-
 }
-
-
