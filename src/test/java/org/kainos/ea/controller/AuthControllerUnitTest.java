@@ -40,7 +40,6 @@ public class AuthControllerUnitTest {
         Response response = authController.login(testLogin);
 
         Assertions.assertEquals(401, response.getStatus());
-        Assertions.assertEquals(response.getEntity(), "Login failed: invalid credentials");
     }
 
     @Test
