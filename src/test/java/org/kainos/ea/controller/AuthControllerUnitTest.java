@@ -1,6 +1,7 @@
 package org.kainos.ea.controller;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.kainos.ea.cli.AuthenticationException;
 import org.kainos.ea.cli.Login;
 import org.kainos.ea.api.AuthService;
 import org.kainos.ea.exception.FailedToGenerateTokenException;
@@ -14,7 +15,7 @@ public class AuthControllerUnitTest {
     AuthService authService = Mockito.mock(AuthService.class);
 
     @Test
-    void login_shouldReturn200StatusCodeAndGenerateToken_whenServiceReturnsValidLogin() throws FailedToGenerateTokenException, FailedToLoginException, InvalidCredentialsException {
+    void login_shouldReturn200StatusCodeAndGenerateToken_whenServiceReturnsValidLogin() throws FailedToGenerateTokenException, FailedToLoginException, InvalidCredentialsException, AuthenticationException {
         Login testLogin = new Login("admin","admin");
 
         String expectedResponseBody = "tokenString";
@@ -29,10 +30,10 @@ public class AuthControllerUnitTest {
     }
 
     @Test
-    void login_shouldReturn401StatusCode_whenServiceThrowsInvalidCredentialsException() throws FailedToGenerateTokenException, FailedToLoginException, InvalidCredentialsException {
+    void login_shouldReturn401StatusCode_whenServiceReturnsNoToken() throws AuthenticationException {
         Login testLogin = new Login("invalidName","admin");
 
-        Mockito.when(authService.login(testLogin)).thenThrow(InvalidCredentialsException.class);
+        Mockito.when(authService.login(testLogin)).thenReturn(null);
 
         AuthController authController = new AuthController(authService);
 
@@ -43,10 +44,10 @@ public class AuthControllerUnitTest {
     }
 
     @Test
-    void login_shouldReturn500StatusCode_whenServiceThrowsFailedToLoginException() throws InvalidCredentialsException, FailedToLoginException, FailedToGenerateTokenException {
+    void login_shouldReturn500StatusCode_whenServiceThrowsAuthenticationException() throws AuthenticationException {
         Login testLogin = new Login("admin","admin");
 
-        Mockito.when(authService.login(testLogin)).thenThrow(FailedToLoginException.class);
+        Mockito.when(authService.login(testLogin)).thenThrow(AuthenticationException.class);
 
         AuthController authController = new AuthController(authService);
 
