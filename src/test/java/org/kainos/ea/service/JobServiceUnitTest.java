@@ -1,18 +1,21 @@
 package org.kainos.ea.service;
 
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kainos.ea.api.JobService;
 import org.kainos.ea.cli.Job;
+import org.kainos.ea.cli.JobRequest;
+import org.kainos.ea.core.JobValidator;
 import org.kainos.ea.db.DatabaseConnector;
 import org.kainos.ea.db.JobDao;
 import org.kainos.ea.exception.FailedToGetJobsException;
+import org.kainos.ea.exception.ProjectException;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
+import static org.mockito.Mockito.when;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -21,10 +24,18 @@ import java.util.List;
 @ExtendWith(MockitoExtension.class)
 public class JobServiceUnitTest {
 
+
     JobDao jobDao = Mockito.mock(JobDao.class);
     DatabaseConnector databaseConnector = Mockito.mock(DatabaseConnector.class);
+    JobValidator jobValidator = Mockito.mock(JobValidator.class);
+    JobRequest jobRequest = new JobRequest(
+            "Test",
+            1,
+            "This is a test",
+            "https://google.com",
+            1);
 
-    JobService jobService = new JobService(jobDao, databaseConnector);
+    JobService jobService = new JobService(jobDao, databaseConnector, jobValidator);
     Connection connection;
 
     @Test
@@ -63,5 +74,34 @@ public class JobServiceUnitTest {
         assertThrows(FailedToGetJobsException.class,
                 () -> jobService.getAllJobs());
     }
+
+    @Test
+    void createJobRole_shouldReturnNewJobId_whenValidInputIsProvided() throws SQLException, ProjectException {
+
+        int expectedID = 1;
+
+        Mockito.when(databaseConnector.getConnection()).thenReturn(connection);
+        Mockito.when(jobDao.createJobRole(jobRequest, connection)).thenReturn(expectedID);
+
+        int result = jobService.createJobRole(jobRequest);
+
+        assertEquals(result, expectedID);
+    }
+
+
+
+    @Test
+    void createJobRole_shouldThrowProjectException_whenValidationFails() throws SQLException, ProjectException {
+
+        Mockito.when(databaseConnector.getConnection()).thenReturn(connection);
+        Mockito.when(jobDao.createJobRole(jobRequest, connection)).thenThrow(SQLException.class);
+
+
+        assertThrows(SQLException.class, ()-> {
+            jobService.createJobRole(jobRequest);
+        });
+    }
+
+
 
 }

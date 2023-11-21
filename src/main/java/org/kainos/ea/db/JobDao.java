@@ -1,11 +1,9 @@
 package org.kainos.ea.db;
 
 import org.kainos.ea.cli.Job;
+import org.kainos.ea.cli.JobRequest;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,6 +44,33 @@ public class JobDao {
 
         return allJobs;
 
+    }
+
+    public int createJobRole(JobRequest job, Connection connection) throws SQLException{
+        // Check database connection
+        if (connection == null) {
+            System.err.println("Failed to connect to database");
+            throw new SQLException("Failed to connect to database");
+        }
+        String insertStatement = "INSERT INTO `job` (`job_title`, `job_spec_summary`, `job_url`, `capability_id`, `job_band_id`) VALUES (?,?,?,?,?)";
+
+        PreparedStatement st = connection.prepareStatement(insertStatement, Statement. RETURN_GENERATED_KEYS);
+
+        st.setString(1, job.getTitle());
+        st.setString(2, job.getJobSpec());
+        st.setString(3, job.getJobURL());
+        st.setInt(4, job.getCapabilityID());
+        st.setInt(5, job.getJobBandID());
+
+
+        st.executeUpdate();
+
+        ResultSet rs = st.getGeneratedKeys();
+
+        if (rs.next()){
+            return rs.getInt(1);
+        }
+        return -1;
     }
 
 }

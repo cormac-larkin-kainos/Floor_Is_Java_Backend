@@ -1,6 +1,9 @@
 package org.kainos.ea.api;
 
 import org.kainos.ea.cli.Job;
+import org.kainos.ea.cli.JobRequest;
+import org.kainos.ea.exception.ProjectException;
+import org.kainos.ea.core.JobValidator;
 import org.kainos.ea.db.DatabaseConnector;
 import org.kainos.ea.db.JobDao;
 import org.kainos.ea.exception.FailedToGetJobsException;
@@ -11,10 +14,12 @@ public class JobService {
 
     private final JobDao jobDao;
     private final DatabaseConnector databaseConnector;
+    private final JobValidator jobValidator;
 
-    public JobService(JobDao jobDao, DatabaseConnector databaseConnector) {
+    public JobService(JobDao jobDao, DatabaseConnector databaseConnector, JobValidator jobValidator) {
         this.jobDao = jobDao;
         this.databaseConnector = databaseConnector;
+        this.jobValidator = jobValidator;
     }
 
     public List<Job> getAllJobs() throws FailedToGetJobsException {
@@ -26,6 +31,20 @@ public class JobService {
             throw new FailedToGetJobsException();
         }
 
+    }
+
+    public int createJobRole(JobRequest job) throws SQLException, ProjectException {
+        String validation = jobValidator.isValid(job);
+
+        if (validation != null){
+            throw new ProjectException();
+        }
+        int id = jobDao.createJobRole(job, databaseConnector.getConnection());
+
+        if (id<1){
+            throw new ProjectException();
+        }
+        return id;
     }
 
 
