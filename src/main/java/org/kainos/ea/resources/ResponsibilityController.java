@@ -1,11 +1,15 @@
 package org.kainos.ea.resources;
 
 import io.swagger.annotations.Api;
+import javassist.NotFoundException;
 import org.kainos.ea.api.ResponsibilityService;
 import org.kainos.ea.db.DatabaseConnector;
 import org.kainos.ea.db.ResponsibilityDao;
 import org.kainos.ea.cli.Responsibility;
 import org.kainos.ea.exception.FailedToGetResponsibilitiesException;
+
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.ws.rs.GET;
@@ -20,29 +24,35 @@ import javax.ws.rs.core.Response;
 public class ResponsibilityController {
 
     private final ResponsibilityService responsibilityService;
-    private final DatabaseConnector databaseConnector;
+    private ResponsibilityDao responsibilityDao;
 
     public ResponsibilityController() {
-        databaseConnector = new DatabaseConnector();
-        responsibilityService = new ResponsibilityService(new ResponsibilityDao(), databaseConnector);
+        responsibilityService = new ResponsibilityService(new ResponsibilityDao(), new DatabaseConnector());
     }
 
     public ResponsibilityController(ResponsibilityService responsibilityService) {
-        databaseConnector = new DatabaseConnector();
         this.responsibilityService = responsibilityService;
     }
 
     @GET
     @Path("/jobs/{jobId}/responsibilities")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getResponsibilitiesForJob(@PathParam("jobId") int jobId) {
+    public Response getResponsibilitiesForJob(@PathParam("jobId") int jobId) throws SQLException {
         try {
+            if (!responsibilityService.doesJobExist(jobId)) {
+                // If the job ID is not found, return a 404 Not Found response
+                return Response.status(Response.Status.NOT_FOUND).entity("Job with ID " + jobId + " not found").build();
+            }
+                //otherwise find responsibilities
             List<Responsibility> responsibilities = responsibilityService.getResponsibilitiesForJob(jobId);
+                //return 404 if no responsibilities found
             if (responsibilities.isEmpty()) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Job with ID " + jobId + " not found").build();
             }
+                //otherwise return status 200 okay
             return Response.ok(responsibilities).build();
-        } catch (FailedToGetResponsibilitiesException e) {
+        } catch (FailedToGetResponsibilitiesException | NotFoundException e) {
+                //return status 500 if any internal server errors
             return Response.serverError().entity(e.getMessage()).build();
         }
     }

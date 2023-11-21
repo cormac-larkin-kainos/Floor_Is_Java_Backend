@@ -1,5 +1,6 @@
 package org.kainos.ea.service;
 
+import javassist.NotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kainos.ea.api.ResponsibilityService;
@@ -29,7 +30,7 @@ public class ResponsibilityServiceUnitTest {
 
 
     @Test
-    public void getResponsibilitiesForJob_shouldReturnListOfResponsibilities_whenDaoReturnsListOfResponsibilities() throws FailedToGetResponsibilitiesException, SQLException {
+    public void getResponsibilitiesForJob_shouldReturnListOfResponsibilities_whenDaoReturnsListOfResponsibilities() throws FailedToGetResponsibilitiesException, SQLException, NotFoundException {
 
         //sample jobId
         int jobId = 1;
@@ -55,14 +56,14 @@ public class ResponsibilityServiceUnitTest {
     }
 
     @Test
-    public void getResponsibilitiesForJob_shouldThrowFailedToGetResponsibilitiesException_whenDaoThrowsSQLException() throws SQLException {
+    public void getResponsibilitiesForJob_shouldThrowNotFoundException_whenDaoThrowsSQLException() throws SQLException {
         // sample job id
         int jobId = 1;
 
         // simulation of job not found in the database
         Mockito.when(responsibilityDao.doesJobExist(connection, jobId)).thenReturn(false);
 
-        assertThrows(FailedToGetResponsibilitiesException.class,
+        assertThrows(NotFoundException.class,
                 () -> responsibilityService.getResponsibilitiesForJob(jobId));
     }
 
