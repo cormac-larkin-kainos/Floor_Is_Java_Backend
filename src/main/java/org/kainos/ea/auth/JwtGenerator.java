@@ -29,6 +29,10 @@ public class JwtGenerator {
      */
     public String generateJwt(String username) {
 
+        if(username == null){
+            return null;
+        }
+
         Builder tokenBuilder = JWT.create()
                 .withIssuer("https://www.floor-is-java.com") //placeholder url
                 .withSubject(username)
