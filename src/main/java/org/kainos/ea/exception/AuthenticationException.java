@@ -1,12 +1,7 @@
 package org.kainos.ea.exception;
 
-public class AuthenticationException extends Exception {
-    public AuthenticationException(String s) {
+public class AuthenticationException extends Throwable {
+    public AuthenticationException(String message) {
+        super(message);
     }
-
-    @Override
-    public String getMessage() {
-        return "Authentication failed, please enter valid credentials";
-    };
 }
-

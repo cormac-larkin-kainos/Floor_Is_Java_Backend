@@ -1,27 +1,25 @@
 package org.kainos.ea.api;
 
+import io.dropwizard.auth.Auth;
+import org.checkerframework.checker.units.qual.A;
 import org.kainos.ea.auth.JwtGenerator;
 import org.kainos.ea.auth.JwtValidator;
-import org.kainos.ea.cli.AuthenticationException;
+import org.kainos.ea.cli.UserRole;
+import org.kainos.ea.exception.AuthenticationException;
 import org.kainos.ea.cli.HashedPassword;
 import org.kainos.ea.cli.Login;
-import org.kainos.ea.db.AuthDao;
 import org.kainos.ea.db.IAuthSource;
-import org.kainos.ea.exception.FailedToLoginException;
-import org.kainos.ea.exception.FailedToGenerateTokenException;
-import org.kainos.ea.exception.InvalidCredentialsException;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
-import java.security.NoSuchAlgorithmException;
 import java.security.spec.KeySpec;
-import java.sql.SQLException;
 import java.util.Arrays;
 
-public class AuthService {
+public class AuthService implements IAuthService {
 
     private final IAuthSource authDao;
     private final JwtGenerator jwtGenerator;
+    private final JwtValidator jwtValidator;
 
     private static final int KEY_LENGTH = 512;
     private static final String HASH_ALG = "PBKDF2WithHmacSHA512";
@@ -31,9 +29,10 @@ public class AuthService {
      * @param authDao the auth source to use
      * @param jwtGenerator the generator for JWTs to use
      */
-    public AuthService(IAuthSource authDao, JwtGenerator jwtGenerator) {
+    public AuthService(IAuthSource authDao, JwtGenerator jwtGenerator, JwtValidator jwtValidator) {
         this.authDao = authDao;
         this.jwtGenerator = jwtGenerator;
+        this.jwtValidator = jwtValidator;
     }
 
     /**
@@ -82,6 +81,21 @@ public class AuthService {
             return null;
         }
 
-        return jwtGenerator.generateJwt(login.getUsername());
+        UserRole role = authDao.getRoleForUser(login.getUsername());
+
+        if(role == null){
+            throw new AuthenticationException("The user has no role!");
+        }
+
+        return jwtGenerator.generateJwt(login.getUsername(),role);
+    }
+
+    @Override
+    public boolean validate(String token) throws AuthenticationException {
+        try {
+            return this.jwtValidator.validateToken(token);
+        } catch (Exception e){
+            throw new AuthenticationException(e.getMessage());
+        }
     }
 }

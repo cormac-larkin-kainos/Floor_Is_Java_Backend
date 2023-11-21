@@ -54,7 +54,5 @@ public class AuthControllerIntegrationTest {
 
         Assertions.assertEquals(401, response.getStatus());
     }
-
-
 }
 

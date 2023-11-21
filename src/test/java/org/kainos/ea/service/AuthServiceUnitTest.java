@@ -4,7 +4,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kainos.ea.api.AuthService;
 import org.kainos.ea.auth.JwtGenerator;
-import org.kainos.ea.cli.AuthenticationException;
+import org.kainos.ea.auth.JwtValidator;
+import org.kainos.ea.cli.UserRole;
+import org.kainos.ea.exception.AuthenticationException;
 import org.kainos.ea.cli.HashedPassword;
 import org.kainos.ea.cli.Login;
 import org.kainos.ea.db.AuthDao;
@@ -31,8 +33,9 @@ public class AuthServiceUnitTest {
 
     IAuthSource authDao = Mockito.mock(AuthDao.class);
     JwtGenerator jwtGenerator = Mockito.mock(JwtGenerator.class);
+    JwtValidator jwtValidator = Mockito.mock(JwtValidator.class);
 
-    AuthService authService = new AuthService(authDao, jwtGenerator);
+    AuthService authService = new AuthService(authDao, jwtGenerator,jwtValidator);
 
     private static byte[] generateSalt() {
         SecureRandom random = new SecureRandom();
@@ -67,7 +70,7 @@ public class AuthServiceUnitTest {
 
         // Check that a JWT is returned from the authService after a successful login
         String jwt = "This is a sample JWT";
-        Mockito.when(jwtGenerator.generateJwt(testLogin.getUsername())).thenReturn(jwt);
+        Mockito.when(jwtGenerator.generateJwt(testLogin.getUsername(), UserRole.User)).thenReturn(jwt);
         assertEquals(jwt, authService.login(testLogin));
     }
 
