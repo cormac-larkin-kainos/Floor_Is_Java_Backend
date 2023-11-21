@@ -34,8 +34,6 @@ public class ResponsibilityControllerUnitTest {
         //add sample responsibilities to a list
         List<Responsibility> expectedResponseBody = Arrays.asList(resSample1, resSample2, resSample3, resSample4);
 
-            Mockito.when(responsibilityService.doesJobExist(jobId)).thenReturn(true);
-
             Mockito.when(responsibilityService.getResponsibilitiesForJob(jobId)).thenReturn(expectedResponseBody);
 
             Response response = responsibilityController.getResponsibilitiesForJob(jobId);
@@ -51,8 +49,6 @@ public class ResponsibilityControllerUnitTest {
         //sample jobId
         int jobId = 1;
 
-        Mockito.when(responsibilityService.doesJobExist(jobId)).thenReturn(true);
-
         Mockito.when(responsibilityService.getResponsibilitiesForJob(jobId)).thenThrow(FailedToGetResponsibilitiesException.class);
 
         Response response = responsibilityController.getResponsibilitiesForJob(jobId);
@@ -62,25 +58,12 @@ public class ResponsibilityControllerUnitTest {
 
     }
 
-    @Test
-    void getResponsibilitiesForJob_shouldReturn404Status_whenJobDoesNotExist() throws SQLException {
-        //sample jobId
-        int jobId = 1;
-
-        Mockito.when(responsibilityService.doesJobExist(jobId)).thenReturn(false);
-
-        Response response = responsibilityController.getResponsibilitiesForJob(jobId);
-
-        Assertions.assertEquals(404, response.getStatus());
-        Assertions.assertEquals("Job with ID " + jobId + " not found", response.getEntity());
-    }
 
     @Test
     void getResponsibilitiesForJob_shouldReturn404Status_whenResponsibilitiesAreEmpty() throws SQLException, FailedToGetResponsibilitiesException, NotFoundException {
         //sample jobId
         int jobId = 1;
 
-        Mockito.when(responsibilityService.doesJobExist(jobId)).thenReturn(true);
         Mockito.when(responsibilityService.getResponsibilitiesForJob(jobId)).thenReturn(new ArrayList<>());
 
         Response response = responsibilityController.getResponsibilitiesForJob(jobId);

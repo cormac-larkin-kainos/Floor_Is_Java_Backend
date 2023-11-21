@@ -37,13 +37,10 @@ public class ResponsibilityController {
     @GET
     @Path("/jobs/{jobId}/responsibilities")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getResponsibilitiesForJob(@PathParam("jobId") int jobId) throws SQLException {
+    public Response getResponsibilitiesForJob(@PathParam("jobId") int jobId) {
         try {
-            if (!responsibilityService.doesJobExist(jobId)) {
-                // If the job ID is not found, return a 404 Not Found response
-                return Response.status(Response.Status.NOT_FOUND).entity("Job with ID " + jobId + " not found").build();
-            }
-                //otherwise find responsibilities
+
+                //find responsibilities
             List<Responsibility> responsibilities = responsibilityService.getResponsibilitiesForJob(jobId);
                 //return 404 if no responsibilities found
             if (responsibilities.isEmpty()) {
@@ -51,9 +48,11 @@ public class ResponsibilityController {
             }
                 //otherwise return status 200 okay
             return Response.ok(responsibilities).build();
-        } catch (FailedToGetResponsibilitiesException | NotFoundException e) {
+        } catch (FailedToGetResponsibilitiesException e) {
                 //return status 500 if any internal server errors
             return Response.serverError().entity(e.getMessage()).build();
+        } catch(NotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
 }

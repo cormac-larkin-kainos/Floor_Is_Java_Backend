@@ -23,27 +23,14 @@ public class ResponsibilityService {
     public List<Responsibility> getResponsibilitiesForJob(int jobId) throws FailedToGetResponsibilitiesException, NotFoundException {
         try {
             // Check if jobId exists in the database before calling the dao
-            if (!doesJobExist(jobId)) {
+            if (!responsibilityDao.doesJobExist(databaseConnector.getConnection(), jobId)) {
                 throw new NotFoundException("Job with ID" + jobId + "not found.");
             }
 
             // If job exists, proceed to get responsibilities
             return responsibilityDao.getResponsibilitiesForJob(databaseConnector.getConnection(), jobId);
         } catch (SQLException e) {
-            System.err.println(e.getMessage());
             throw new FailedToGetResponsibilitiesException();
-        }
-    }
-    // New method to check if a job exists
-    public boolean doesJobExist(int jobId) throws SQLException {
-        Connection connection = null;
-        try {
-            connection = databaseConnector.getConnection();
-            return responsibilityDao.doesJobExist(connection, jobId);
-        } finally {
-            if (connection != null) {
-                connection.close();
-            }
         }
     }
 }
