@@ -5,10 +5,12 @@ import org.junit.jupiter.api.Test;
 import org.kainos.ea.api.JobService;
 import org.kainos.ea.cli.Job;
 import org.kainos.ea.exception.FailedToGetJobsException;
+import org.kainos.ea.exception.FailedtoDeleteException;
 import org.kainos.ea.resources.JobController;
 import org.mockito.Mockito;
 
 import javax.ws.rs.core.Response;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -46,6 +48,42 @@ public class JobControllerUnitTest {
         Assertions.assertEquals(response.getStatus(), 500);
         Assertions.assertEquals(response.getEntity(), "A database error occurred, failed to get jobs");
 
+    }
+
+    @Test
+    void deleteJob_shouldReturn404_whenJobIdNotFound() throws FailedtoDeleteException {
+        Mockito.when(jobService.delete(-1)).thenReturn(false);
+        JobController jobController = new JobController(jobService);
+
+        Response response = jobController.deleteJob("-1");
+
+        Assertions.assertEquals(response.getStatus(),404);
+    }
+
+    @Test
+    void deleteJob_shouldReturn500_whenFailedToDeleteExceptionThrown() throws FailedtoDeleteException  {
+        Mockito.when(jobService.delete(-1)).thenThrow(FailedtoDeleteException.class);
+        JobController jobController = new JobController(jobService);
+
+        Response response = jobController.deleteJob("-1");
+
+        Assertions.assertEquals(response.getStatus(),500);
+    }
+
+    @Test
+    void deleteJob_shouldReturn400_whenBadIdPassed() {
+        JobController jobController = new JobController(jobService);
+
+        Response response = jobController.deleteJob("This is a bad id");
+        Assertions.assertEquals(response.getStatus(),400);
+    }
+
+    @Test
+    void deleteJob_shouldReturn400_whenNoPassed() {
+        JobController jobController = new JobController(jobService);
+
+        Response response = jobController.deleteJob(null);
+        Assertions.assertEquals(response.getStatus(),400);
     }
 
 }

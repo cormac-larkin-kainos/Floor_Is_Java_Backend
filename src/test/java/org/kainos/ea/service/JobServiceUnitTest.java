@@ -7,16 +7,17 @@ import org.kainos.ea.cli.Job;
 import org.kainos.ea.db.DatabaseConnector;
 import org.kainos.ea.db.JobDao;
 import org.kainos.ea.exception.FailedToGetJobsException;
+import org.kainos.ea.exception.FailedtoDeleteException;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.isA;
 
 @ExtendWith(MockitoExtension.class)
 public class JobServiceUnitTest {
@@ -58,10 +59,38 @@ public class JobServiceUnitTest {
 
     @Test
     void getAllJobs_shouldThrowFailedToGetJobsException_whenDatabaseConnectorThrowsSQLException() throws SQLException {
-        Mockito.when(databaseConnector.getConnection()).thenThrow(SQLException.class);
+        Mockito.when(databaseConnector.getConnection()).thenReturn(connection);
+        Mockito.when(jobDao.getJobById(connection,-1)).thenReturn(null);
 
         assertThrows(FailedToGetJobsException.class,
                 () -> jobService.getAllJobs());
     }
 
+    @Test
+    void deleteJob_shouldReturnFalse_IfJobIdNotFound() throws SQLException, FailedtoDeleteException {
+        Mockito.when(databaseConnector.getConnection()).thenReturn(connection);
+        Mockito.when(jobDao.getJobById(connection,-1)).thenReturn(null);
+        Mockito.doNothing().when(jobDao).deleteJob(isA(Connection.class),isA(Integer.class));
+        assertFalse(jobService.delete(-1));
+    }
+
+    @Test
+    void deleteJob_shouldReturnTrue_IfJobIdFound() throws SQLException, FailedtoDeleteException {
+        Job sampleJob1 = new Job(1, "Software Engineer", "Develops, tests, and maintains software applications, collaborates with cross-functional teams, and follows best practices to deliver efficient and reliable software solutions.", "https://kainossoftwareltd.sharepoint.com/people/Job%20Specifications/Forms/AllItems.aspx?id=%2Fpeople%2FJob%20Specifications%2FEngineering%2FJob%20profile%20%2D%20Software%20Engineer%20%28Associate%29%2Epdf&parent=%2Fpeople%2FJob%20Specifications%2FEngineering&p=true&ga=1");
+        Mockito.when(databaseConnector.getConnection()).thenReturn(connection);
+        Mockito.when(jobDao.getJobById(connection,-1)).thenReturn(sampleJob1);
+        Mockito.doNothing().when(jobDao).deleteJob(isA(Connection.class),isA(Integer.class));
+        assertFalse(jobService.delete(1));
+    }
+
+    @Test
+    void deleteJob_shouldThrowFailedToDeleteException_whenDAOthrowsSQLException() throws SQLException, FailedtoDeleteException {
+        Mockito.when(databaseConnector.getConnection()).thenReturn(connection);
+        Mockito.when(jobDao.getJobById(connection,-1)).thenThrow(SQLException.class);
+        Mockito.doNothing().when(jobDao).deleteJob(isA(Connection.class),isA(Integer.class));
+
+        assertThrows(FailedtoDeleteException.class,() -> {
+            jobService.delete(-1);
+        });
+    }
 }
