@@ -7,10 +7,9 @@ import org.kainos.ea.cli.UserRole;
 import org.kainos.ea.db.DatabaseConnector;
 import org.kainos.ea.db.JobDao;
 import org.kainos.ea.exception.FailedToGetJobsException;
+import org.kainos.ea.exception.FailedtoDeleteException;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -59,6 +58,26 @@ public class JobController {
             return Response.ok(jobService.getAllJobs()).build();
         } catch (FailedToGetJobsException e) {
             return Response.serverError().entity(e.getMessage()).build();
+        }
+    }
+
+
+    @DELETE
+    @Path("/jobs/{id}")
+    @Authorised({UserRole.Admin})
+    public Response deleteJob(@PathParam("id") String id) {
+        try {
+            int convertedId = Integer.parseInt(id);
+            if(!jobService.delete(convertedId)) {
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+            return Response.ok().build();
+        } catch (FailedtoDeleteException e) {
+            System.err.println(e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        } catch (NumberFormatException e){
+            System.err.println(e.getMessage());
+            return Response.status(Response.Status.BAD_REQUEST).build();
         }
     }
 }
