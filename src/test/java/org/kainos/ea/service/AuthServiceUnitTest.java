@@ -37,6 +37,9 @@ public class AuthServiceUnitTest {
 
     AuthService authService = new AuthService(authDao, jwtGenerator,jwtValidator);
 
+    private static String VALID_USERNAME = System.getenv("TEST_VALID_USERNAME");
+    private static String VALID_PASSWORD = System.getenv("TEST_VALID_PASSWORD");
+
     private static byte[] generateSalt() {
         SecureRandom random = new SecureRandom();
         byte[] salt = new byte[16];
@@ -62,15 +65,16 @@ public class AuthServiceUnitTest {
     @Test
     void login_ShouldGenerateToken_WhenLoggedInWithValidCredentials() throws SQLException, FailedToGenerateTokenException, FailedToLoginException, InvalidCredentialsException, AuthenticationException {
 
-        Login testLogin = new Login("admin","admin");
+        Login testLogin = new Login(VALID_USERNAME,VALID_PASSWORD);
 
         HashedPassword hashedPassword = generateHashForPassword(testLogin.getPassword());
 
         Mockito.when(authDao.getPasswordForUser(testLogin.getUsername())).thenReturn(hashedPassword);
 
         // Check that a JWT is returned from the authService after a successful login
-        String jwt = "This is a sample JWT";
+        String jwt = "TEST.TEST.TEST";
         Mockito.when(jwtGenerator.generateJwt(testLogin.getUsername(), UserRole.User)).thenReturn(jwt);
+        Mockito.when(authDao.getRoleForUser(testLogin.getUsername())).thenReturn(UserRole.User);
         assertEquals(jwt, authService.login(testLogin));
     }
 
@@ -85,7 +89,7 @@ public class AuthServiceUnitTest {
 
     @Test
     void login_shouldThrowAuthenticationException_whenDAOThrowsAuthenticationException() throws AuthenticationException {
-        Login testLogin = new Login("admin","admin");
+        Login testLogin = new Login(VALID_USERNAME,VALID_PASSWORD);
         Mockito.when(authDao.getPasswordForUser(testLogin.getUsername())).thenThrow(AuthenticationException.class);
         assertThrows(AuthenticationException.class, () -> authService.login(testLogin));
     }
