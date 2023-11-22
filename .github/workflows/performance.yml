@@ -2,7 +2,7 @@ name: Daily Performance Tests
 
 on:
   schedule:
-    - cron: '0 15 * * *'  # Scheduled for 3pm UTC
+    - cron: '0 0 * * *'  # Scheduled for midnight
 
 jobs:
   performance:
@@ -19,7 +19,7 @@ jobs:
 
       - name: Run JMeter Performance Test
         run: |
-          ./apache-jmeter-5.4.1/bin/jmeter -n -t scripts/performance_test.jmx -l reports/result.jtl
+          ./apache-jmeter-5.4.1/bin/jmeter -n -t scripts/performance-test.jmx -l reports/result.jtl
 
       - name: Save Artifacts
         uses: actions/upload-artifact@v2

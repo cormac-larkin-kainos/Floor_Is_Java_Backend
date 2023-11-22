@@ -3,6 +3,8 @@ package org.kainos.ea.resources;
 import io.swagger.annotations.Api;
 import javassist.NotFoundException;
 import org.kainos.ea.api.ResponsibilityService;
+import org.kainos.ea.cli.Authorised;
+import org.kainos.ea.cli.UserRole;
 import org.kainos.ea.db.DatabaseConnector;
 import org.kainos.ea.db.ResponsibilityDao;
 import org.kainos.ea.cli.Responsibility;
@@ -37,9 +39,9 @@ public class ResponsibilityController {
     @GET
     @Path("/jobs/{jobId}/responsibilities")
     @Produces(MediaType.APPLICATION_JSON)
+    @Authorised({UserRole.User, UserRole.Admin})
     public Response getResponsibilitiesForJob(@PathParam("jobId") int jobId) {
         try {
-
                 //find responsibilities
             List<Responsibility> responsibilities = responsibilityService.getResponsibilitiesForJob(jobId);
                 //return 404 if no responsibilities found

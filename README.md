@@ -37,6 +37,12 @@ Run `mvn clean test` to run unit tests
 Run `mvn clean integration-test` to run integration tests (this may require VPN for database access)
 NOTE: Integration tests require connection to the database which may require VPN
 
+In order to run login integration tests, the following environment variables need to be set (using valid login credentials):
+
+TEST_USERNAME
+
+TEST_PASSWORD
+
 Build and run the service through docker
 ---
 

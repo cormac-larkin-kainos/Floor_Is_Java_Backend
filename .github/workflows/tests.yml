@@ -31,6 +31,13 @@ jobs:
         run: mvn -B package -DskipTests --file pom.xml
 
       - name: Run Unit Tests
+        env:
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
+          TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
         run: mvn clean test --file pom.xml
 
       - name: Run Integration Tests
@@ -39,5 +46,7 @@ jobs:
           DB_USERNAME: ${{ secrets.DB_USERNAME }}
           DB_HOST: ${{ secrets.DB_HOST }}
           DB_NAME: ${{ secrets.DB_NAME }}
+          TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
+          TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
         run: mvn integration-test --file pom.xml
 
