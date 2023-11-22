@@ -10,10 +10,14 @@ import org.kainos.ea.exception.FailedToGetJobBandsException;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class JobBandServiceUnitTest {
@@ -41,6 +45,18 @@ public class JobBandServiceUnitTest {
 
         assertEquals(result, expectedResult);
 
+    }
+
+    @Test
+    void getAllJobBands_shouldThrowException_whenConnectionIsNull() throws SQLException, FailedToGetJobBandsException {
+        // Mock the behavior of the DatabaseConnector to return a null connection
+        Mockito.when(databaseConnector.getConnection()).thenReturn(null);
+
+        // Mock that the DAO method will throw a FailedToGetJobBandsException when the connection is null
+        Mockito.when(jobBandDao.getAllJobBands(null)).thenThrow(FailedToGetJobBandsException.class);
+
+        // Assert that the service method throws FailedToGetJobBandsException when the connection is null
+        assertThrows(FailedToGetJobBandsException.class, () -> jobBandService.getAllJobBands());
     }
 
 

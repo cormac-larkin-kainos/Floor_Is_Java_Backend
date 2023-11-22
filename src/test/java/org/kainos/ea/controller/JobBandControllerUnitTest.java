@@ -13,6 +13,7 @@ import org.kainos.ea.resources.JobBandController;
 import org.mockito.Mockito;
 
 import javax.ws.rs.core.Response;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,15 +22,13 @@ public class JobBandControllerUnitTest {
     JobBandService jobBandService = Mockito.mock(JobBandService.class);
 
     @Test
-    void getAllJobBands_shouldReturn200StatusCodeAndListOfJobBands_whenServiceReturnsListOfJobBands() throws FailedToGetJobBandsException {
+    void getAllJobBands_shouldReturn200StatusCodeAndListOfJobBands_whenServiceReturnsListOfJobBands() throws FailedToGetJobBandsException, SQLException {
 
         // Create sample jobs and add them to a List
 
         JobBand jobBand1 = new JobBand(1, "Trainee");
         JobBand jobBand2 = new JobBand(2, "Associate");
         JobBand jobBand3 = new JobBand(3, "Consultant");
-
-
 
         List<JobBand> expectedResponseBody = Arrays.asList(jobBand1, jobBand2, jobBand3);
 
@@ -43,7 +42,7 @@ public class JobBandControllerUnitTest {
     }
 
     @Test
-    void getAllJobBands_shouldReturn500StatusCodeAndErrorMessage_whenServiceThrowsFailedToGetJobBandsException() throws FailedToGetJobBandsException {
+    void getAllJobBands_shouldReturn500StatusCodeAndErrorMessage_whenServiceThrowsFailedToGetJobBandsException() throws FailedToGetJobBandsException, SQLException {
 
         Mockito.when(jobBandService.getAllJobBands()).thenThrow(FailedToGetJobBandsException.class);
         JobBandController jobBandController = new JobBandController(jobBandService);
@@ -54,6 +53,16 @@ public class JobBandControllerUnitTest {
         Assertions.assertEquals(response.getEntity(), "A database error occurred, failed to get job bands");
     }
 
+    @Test
+    void getAllJobBands_shouldReturn500StatusCodeAndErrorMessage_whenServiceThrowsFailedToGetJobBandsException2() throws FailedToGetJobBandsException, SQLException {
+
+        Mockito.when(jobBandService.getAllJobBands()).thenThrow(SQLException.class);
+        JobBandController jobBandController = new JobBandController(jobBandService);
+
+        Response response = jobBandController.getAllJobBands();
+
+        Assertions.assertEquals(response.getStatus(), 500);
+    }
 
 
 }

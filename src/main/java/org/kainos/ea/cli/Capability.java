@@ -5,10 +5,6 @@ public class Capability {
     private int capabilityID;
     private String name;
 
-    public Capability(){
-
-    }
-
     public Capability(int capabilityID, String name) {
         this.capabilityID = capabilityID;
         this.name = name;

@@ -1,6 +1,5 @@
 package org.kainos.ea.service;
 
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kainos.ea.api.JobService;
@@ -15,7 +14,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.when;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -88,20 +86,15 @@ public class JobServiceUnitTest {
         assertEquals(result, expectedID);
     }
 
-
-
     @Test
-    void createJobRole_shouldThrowProjectException_whenValidationFails() throws SQLException, ProjectException {
+    void createJobRole_shouldThrowProjectException_whenValidationFails() throws SQLException {
 
         Mockito.when(databaseConnector.getConnection()).thenReturn(connection);
         Mockito.when(jobDao.createJobRole(jobRequest, connection)).thenThrow(SQLException.class);
-
 
         assertThrows(SQLException.class, ()-> {
             jobService.createJobRole(jobRequest);
         });
     }
-
-
 
 }

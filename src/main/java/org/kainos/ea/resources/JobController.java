@@ -53,15 +53,16 @@ public class JobController {
     @POST
     @Path("/jobs")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createJobRole(JobRequest job){
-        try{
-            return Response.ok(jobService.createJobRole(job)).build();
-        } catch (ProjectException e){
+    public Response createJobRole(JobRequest job) {
+        try {
+            int createdJobId = jobService.createJobRole(job);
+            return Response.ok(createdJobId).build();
+        } catch (ProjectException e) {
             System.err.println(e.getMessage());
-            return Response.status(Response.Status.BAD_REQUEST).build();
+            return Response.status(Response.Status.BAD_REQUEST).entity("Job creation failed").build();
         } catch (SQLException se) {
             System.err.println(se.getMessage());
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Database error").build();
         }
     }
 

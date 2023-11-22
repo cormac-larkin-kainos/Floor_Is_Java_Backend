@@ -14,6 +14,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.sql.SQLException;
 
 @Api("Floor is Java Job Band API")
 @Path("/api")
@@ -45,11 +46,8 @@ public class JobBandController {
 
         try {
             return Response.ok(jobBandService.getAllJobBands()).build();
-        } catch (FailedToGetJobBandsException e) {
+        } catch (FailedToGetJobBandsException | SQLException e) {
             return Response.serverError().entity(e.getMessage()).build();
         }
-
     }
-
-
 }

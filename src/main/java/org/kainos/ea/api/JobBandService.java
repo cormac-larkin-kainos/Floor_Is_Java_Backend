@@ -22,18 +22,8 @@ public class JobBandService {
         this.databaseConnector = databaseConnector;
     }
 
-    public List<JobBand> getAllJobBands() throws FailedToGetJobBandsException {
-
-        try {
-            return jobBandDao.getAllJobBands(databaseConnector.getConnection());
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-            throw new FailedToGetJobBandsException();
-        }
-
+    public List<JobBand> getAllJobBands() throws FailedToGetJobBandsException, SQLException {
+        return jobBandDao.getAllJobBands(databaseConnector.getConnection());
     }
-
-
-
 
 }

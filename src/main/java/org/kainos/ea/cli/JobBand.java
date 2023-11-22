@@ -5,10 +5,6 @@ public class JobBand {
     private int jobBandID;
     private String jobBandName;
 
-    public JobBand(){
-
-    }
-
     public JobBand(int jobBandID, String jobBandName) {
         this.jobBandID = jobBandID;
         this.jobBandName = jobBandName;

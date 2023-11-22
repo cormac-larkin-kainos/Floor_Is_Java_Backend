@@ -36,16 +36,14 @@ public class JobService {
     public int createJobRole(JobRequest job) throws SQLException, ProjectException {
         String validation = jobValidator.isValid(job);
 
-        if (validation != null){
-            throw new ProjectException();
+        if (validation != null) {
+            throw new ProjectException("Invalid data for job creation");
         }
         int id = jobDao.createJobRole(job, databaseConnector.getConnection());
 
-        if (id<1){
-            throw new ProjectException();
+        if (id < 1) {
+            throw new ProjectException("Job creation failed");
         }
         return id;
     }
-
-
 }

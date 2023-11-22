@@ -6,7 +6,6 @@ public class JobValidator {
 
     public String isValid(JobRequest job){
 
-
         //JobTitle
         if (job.getTitle().length() > 255){
             return "Job title is too long";
@@ -17,16 +16,16 @@ public class JobValidator {
         }
 
 
-        //Capability - Need to pass in ID?
+        //Capability
         if(job.getCapabilityID() < 1)
         {
             return "CapabilityID is less than 1";
         }
-        if (job.getCapabilityID()>=1)
-        {
-            return null;
-        }
 
+        if(job.getCapabilityID() > 65535)
+        {
+            return "CapabilityID is greater than 65,535";
+        }
 
         //Job Spec
         if (job.getJobSpec().length() > 255){
@@ -49,8 +48,9 @@ public class JobValidator {
         if (job.getJobBandID() < 1){
             return "JobBandID is less than 1";
         }
-        if (job.getJobBandID()>=1){
-            return null;
+
+        if (job.getJobBandID() > 65535){
+            return "JobBandID is greater than 65,535";
         }
 
 
