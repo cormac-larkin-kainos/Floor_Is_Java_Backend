@@ -1,6 +1,7 @@
 package org.kainos.ea.resources;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.Authorization;
 import javassist.NotFoundException;
 import org.kainos.ea.api.ResponsibilityService;
 import org.kainos.ea.cli.Authorised;
@@ -9,9 +10,6 @@ import org.kainos.ea.db.DatabaseConnector;
 import org.kainos.ea.db.ResponsibilityDao;
 import org.kainos.ea.cli.Responsibility;
 import org.kainos.ea.exception.FailedToGetResponsibilitiesException;
-
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 
 import javax.ws.rs.GET;
@@ -21,8 +19,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Api("Floor is Java Responsibility API")
 @Path("/api")
+
+@Api(
+        value = "Floor is Java Responsibility API",
+        authorizations = {@Authorization(value = "basicAuth")}
+)
 public class ResponsibilityController {
 
     private final ResponsibilityService responsibilityService;
