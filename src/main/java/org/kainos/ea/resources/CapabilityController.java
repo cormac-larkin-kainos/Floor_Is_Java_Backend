@@ -1,6 +1,7 @@
 package org.kainos.ea.resources;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.Authorization;
 import org.kainos.ea.api.CapabilityService;
 import org.kainos.ea.cli.Authorised;
 import org.kainos.ea.cli.UserRole;
@@ -14,7 +15,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Api("Floor is Java Capability API")
+@Api(
+    value = "Floor is Java Job API",
+    authorizations = {@Authorization(value = "basicAuth")}
+)
 @Path("/api")
 public class CapabilityController {
 

@@ -61,12 +61,11 @@ public class FloorIsJavaApplication extends Application<FloorIsJavaConfiguration
     public void run(final FloorIsJavaConfiguration configuration,
                     final Environment environment) {
         JobService jobService = new JobService(new JobDao(),new DatabaseConnector(),new JobValidator());
+        environment.jersey().register(new AuthController(authService));
+        environment.jersey().register(new AuthorisationFilter(authService));
         environment.jersey().register(new JobController(jobService));
         environment.jersey().register(new CapabilityController());
         environment.jersey().register(new JobBandController());
-        environment.jersey().register(new AuthorisationFilter(authService));
-        environment.jersey().register(new AuthController(authService));
-
     }
 
 }
