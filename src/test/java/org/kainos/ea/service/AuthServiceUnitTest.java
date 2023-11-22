@@ -37,8 +37,8 @@ public class AuthServiceUnitTest {
 
     AuthService authService = new AuthService(authDao, jwtGenerator,jwtValidator);
 
-    private static String VALID_USERNAME = System.getenv("TEST_VALID_USERNAME");
-    private static String VALID_PASSWORD = System.getenv("TEST_VALID_PASSWORD");
+    private static String VALID_USERNAME = System.getenv("TEST_USERNAME");
+    private static String VALID_PASSWORD = System.getenv("TEST_PASSWORD");
 
     private static byte[] generateSalt() {
         SecureRandom random = new SecureRandom();
