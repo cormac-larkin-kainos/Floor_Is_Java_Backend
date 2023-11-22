@@ -61,6 +61,20 @@ public class JobController {
         }
     }
 
+    @GET
+    @Path("/job/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Authorised({UserRole.User,UserRole.Admin})
+    public Response getJob(@PathParam("id") String id) {
+        try {
+            return Response.ok().entity(jobService.getById(Integer.parseInt(id))).build();
+        } catch (FailedToGetJobsException e) {
+            return Response.serverError().build();
+        } catch (NumberFormatException e){
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+    }
+
 
     @DELETE
     @Path("/jobs/{id}")

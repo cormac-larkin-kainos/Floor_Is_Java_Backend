@@ -30,6 +30,15 @@ public class JobService {
 
     }
 
+    public Job getById(int id) throws FailedToGetJobsException {
+        try {
+            return jobDao.getJobById(databaseConnector.getConnection(),id);
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+            throw new FailedToGetJobsException();
+        }
+    }
+
     public boolean delete(int id) throws FailedtoDeleteException {
         try {
 
