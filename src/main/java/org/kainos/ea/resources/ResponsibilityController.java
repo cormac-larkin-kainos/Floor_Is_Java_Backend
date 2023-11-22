@@ -20,7 +20,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 @Path("/api")
-
 @Api(
         value = "Floor is Java Responsibility API",
         authorizations = {@Authorization(value = "basicAuth")}
