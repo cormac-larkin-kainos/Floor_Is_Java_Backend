@@ -3,6 +3,7 @@ package org.kainos.ea.resources;
 import io.swagger.annotations.*;
 import org.kainos.ea.api.JobService;
 import org.kainos.ea.cli.Authorised;
+import org.kainos.ea.cli.Job;
 import org.kainos.ea.cli.UserRole;
 import org.kainos.ea.db.DatabaseConnector;
 import org.kainos.ea.db.JobDao;
@@ -67,7 +68,11 @@ public class JobController {
     @Authorised({UserRole.User,UserRole.Admin})
     public Response getJob(@PathParam("id") String id) {
         try {
-            return Response.ok().entity(jobService.getById(Integer.parseInt(id))).build();
+            Job job = jobService.getById(Integer.parseInt(id));
+            if(job == null){
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+            return Response.ok().entity(job).build();
         } catch (FailedToGetJobsException e) {
             return Response.serverError().build();
         } catch (NumberFormatException e){
