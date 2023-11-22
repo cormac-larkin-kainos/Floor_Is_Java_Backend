@@ -65,6 +65,7 @@ public class JobControllerIntegrationTest {
         // Send a POST request to create a job
         Response response = APP.client().target("http://localhost:8080/api/jobs")
                 .request()
+                .header("Authorization","Bearer " + getJWT())
                 .post(Entity.json(newJob)); // Send the job as JSON in the request body
 
         assertEquals(200, response.getStatus());
@@ -78,6 +79,7 @@ public class JobControllerIntegrationTest {
         // Send a POST request to create a job with invalid data
         Response response = APP.client().target("http://localhost:8080/api/jobs")
                 .request()
+                .header("Authorization","Bearer " + getJWT())
                 .post(Entity.json(invalidJob)); // Send the invalid job as JSON in the request body
 
         // Assert that the HTTP response status code is 400 (Bad Request) or appropriate error code
