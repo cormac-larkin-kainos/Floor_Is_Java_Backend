@@ -16,13 +16,13 @@ import org.kainos.ea.exception.ProjectException;
 import org.kainos.ea.resources.JobController;
 import org.mockito.Mockito;
 
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.sql.SQLException;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(DropwizardExtensionsSupport.class)
 public class JobControllerIntegrationTest {
@@ -32,10 +32,6 @@ public class JobControllerIntegrationTest {
             new ResourceConfigurationSourceProvider()
     );
 
-    DatabaseConnector databaseConnector = Mockito.mock(DatabaseConnector.class);
-    JobService jobService = Mockito.mock(JobService.class);
-    JobController jobController = new JobController(jobService);
-
     @Test
     void getAllJobs_ShouldReturnListOfJobs() {
         Response response = APP.client().target("http://localhost:8080/api/jobs")
@@ -44,7 +40,7 @@ public class JobControllerIntegrationTest {
                 .get();
 
         assertEquals(200, response.getStatus());
-        Assertions.assertNotNull(response.getEntity());
+        assertNotNull(response.getEntity());
 
         // Check that the all jobs in the response contain the correct properties
         List<Job> allJobs = response.readEntity(List.class);
@@ -54,36 +50,29 @@ public class JobControllerIntegrationTest {
     }
 
     @Test
-    void createJobRole_ShouldCreateJobSuccessfully() throws SQLException, ProjectException {
-        // Assuming you have a JobRequest instance set up
-        JobRequest jobRequest = new JobRequest("Sample Job", 1, "Job spec", "https://example.com", 2);
+    void createJob_ShouldReturnCreatedStatus() {
+        // Create a new job object or use a predefined job object
+        JobRequest newJob = new JobRequest("newJob",1,"A new job","job@newjob.com",2);
 
-        // Mock the behavior of the JobService to return a job ID
-        int expectedJobId = 1;
-        Mockito.when(jobService.createJobRole(jobRequest)).thenReturn(expectedJobId);
+        // Send a POST request to create a job
+        Response response = APP.client().target("http://localhost:8080/api/jobs")
+                .request()
+                .post(Entity.json(newJob)); // Send the job as JSON in the request body
 
-        // Invoke the controller method
-        Response response = jobController.createJobRole(jobRequest);
-
-        // Assert that the response status is 200
         assertEquals(200, response.getStatus());
-
-        // Check the response entity for the expected job ID
-        int jobIdFromResponse = (int) response.getEntity();
-        assertTrue(jobIdFromResponse > 0);
     }
 
     @Test
-    void createJobRole_ShouldFailWithInvalidData() throws SQLException, ProjectException {
+    void createJob_WithInvalidData_ShouldReturnBadRequest() {
+        // Create a new job object with invalid data or missing required fields
+        JobRequest invalidJob = new JobRequest("", 0, "A new job", "job@newjob.com", 2);
 
-        JobRequest jobRequest = new JobRequest("", 0, "", "", -1);
-        int expectedStatusCode = 400;
+        // Send a POST request to create a job with invalid data
+        Response response = APP.client().target("http://localhost:8080/api/jobs")
+                .request()
+                .post(Entity.json(invalidJob)); // Send the invalid job as JSON in the request body
 
-        Mockito.doThrow(ProjectException.class).when(jobService).createJobRole(jobRequest);
-
-        Response response = jobController.createJobRole(jobRequest);
-
-        assertEquals(response.getStatus(), expectedStatusCode);
+        // Assert that the HTTP response status code is 400 (Bad Request) or appropriate error code
+        assertEquals(400, response.getStatus());
     }
-
 }
