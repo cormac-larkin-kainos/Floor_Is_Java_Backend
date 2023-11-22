@@ -88,6 +88,7 @@ public class JobDao {
     }
 
     public void deleteJob(Connection connection, int id) throws SQLException {
+        String responsibilitiesSQL = "DELETE FROM job_responsibility WHERE job_id = ?";
         String SQL = "DELETE FROM job WHERE job_id = ?";
 
         // Check database connection
@@ -103,9 +104,12 @@ public class JobDao {
         }
 
         PreparedStatement statement = connection.prepareStatement(SQL);
+        PreparedStatement responsibilitiesStmt = connection.prepareStatement(responsibilitiesSQL);
 
+        responsibilitiesStmt.setInt(1,id);
         statement.setInt(1,id);
 
+        responsibilitiesStmt.executeUpdate();
         statement.executeUpdate();
     }
 }
