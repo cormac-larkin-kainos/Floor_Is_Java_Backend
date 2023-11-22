@@ -29,13 +29,13 @@ public class JwtGeneratorTest {
 
     @Test
     void checkTokenNotGeneratedIfNullUserPassed() {
-        String jwt = generator.generateJwt(null);
+        String jwt = generator.generateJwt(null,UserRole.User);
         Assertions.assertNull(jwt);
     }
 
     @Test
     void checkTokenGivenWithCorrectIssuer() {
-        String jwt = generator.generateJwt("Test");
+        String jwt = generator.generateJwt("Test",UserRole.User);
         DecodedJWT token = JWT.decode(jwt);
         Assertions.assertEquals(token.getIssuer(),"https://www.floor-is-java.com");
     }
