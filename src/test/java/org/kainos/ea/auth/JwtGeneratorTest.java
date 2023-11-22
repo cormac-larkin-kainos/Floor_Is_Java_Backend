@@ -5,6 +5,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.kainos.ea.cli.UserRole;
 
 public class JwtGeneratorTest {
     private static JwtGenerator generator;
@@ -20,7 +21,7 @@ public class JwtGeneratorTest {
 
     @Test
     void checkTokenGeneratedWithUserNamePassedIn(){
-        String jwt = generator.generateJwt("test");
+        String jwt = generator.generateJwt("test", UserRole.User);
         String subject = JWT.decode(jwt).getSubject();
 
         Assertions.assertEquals(subject,"test");

@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestTemplate;
+import org.kainos.ea.cli.UserRole;
 
 import java.security.InvalidParameterException;
 import java.security.KeyPair;
@@ -35,7 +36,7 @@ public class JwtValidatorTest {
 
     @Test
     void checkValidTokenPassesValidation() {
-        String jwt = generator.generateJwt("test");
+        String jwt = generator.generateJwt("test", UserRole.User);
         Assertions.assertTrue(validator.validateToken(jwt));
     }
 
