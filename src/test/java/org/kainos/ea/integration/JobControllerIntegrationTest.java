@@ -8,18 +8,12 @@ import org.kainos.ea.FloorIsJavaConfiguration;
 import io.dropwizard.testing.junit5.DropwizardAppExtension;
 import io.dropwizard.testing.junit5.DropwizardExtensionsSupport;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.kainos.ea.api.JobService;
+import org.kainos.ea.cli.Login;
+import javax.ws.rs.client.Entity;
 import org.kainos.ea.cli.Job;
 import org.kainos.ea.cli.JobRequest;
-import org.kainos.ea.db.DatabaseConnector;
-import org.kainos.ea.exception.ProjectException;
-import org.kainos.ea.resources.JobController;
-import org.mockito.Mockito;
-
-import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.sql.SQLException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,10 +26,24 @@ public class JobControllerIntegrationTest {
             new ResourceConfigurationSourceProvider()
     );
 
+    private static final String VALID_USERNAME = System.getenv("TEST_USERNAME");
+    private static final String VALID_PASSWORD = System.getenv("TEST_PASSWORD");
+
+    private String getJWT() {
+        if(VALID_USERNAME == null || VALID_PASSWORD == null){
+            throw new IllegalArgumentException("Test credential environment variables not set!");
+        }
+        Login credentials = new Login(VALID_USERNAME,VALID_PASSWORD);
+        Response response = APP.client().target("http://localhost:8080/api/login").request().post(Entity.json(credentials));
+
+        return response.readEntity(String.class);
+    }
+
     @Test
     void getAllJobs_ShouldReturnListOfJobs() {
         Response response = APP.client().target("http://localhost:8080/api/jobs")
                 .request()
+                .header("Authorization","Bearer " + getJWT())
                 .accept(MediaType.APPLICATION_JSON)
                 .get();
 

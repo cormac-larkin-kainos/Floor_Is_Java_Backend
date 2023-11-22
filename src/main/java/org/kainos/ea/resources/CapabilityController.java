@@ -2,6 +2,8 @@ package org.kainos.ea.resources;
 
 import io.swagger.annotations.Api;
 import org.kainos.ea.api.CapabilityService;
+import org.kainos.ea.cli.Authorised;
+import org.kainos.ea.cli.UserRole;
 import org.kainos.ea.db.CapabilityDao;
 import org.kainos.ea.db.DatabaseConnector;
 import org.kainos.ea.exception.FailedToGetCapabilitiesException;
@@ -38,6 +40,7 @@ public class CapabilityController {
     @GET
     @Path("/capabilities")
     @Produces(MediaType.APPLICATION_JSON)
+    @Authorised({UserRole.Admin, UserRole.User})
     public Response getAllCapabilities() {
 
         try {

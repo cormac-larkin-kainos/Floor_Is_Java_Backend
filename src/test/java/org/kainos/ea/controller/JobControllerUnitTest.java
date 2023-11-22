@@ -43,8 +43,9 @@ public class JobControllerUnitTest {
 
         Response response = jobController.getAllJobs();
 
-        assertEquals(response.getStatus(), 200);
-        assertEquals(response.getEntity(), expectedResponseBody);
+        Assertions.assertEquals(200, response.getStatus());
+        Assertions.assertEquals(expectedResponseBody, response.getEntity());
+
     }
 
     @Test
