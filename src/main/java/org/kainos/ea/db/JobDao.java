@@ -48,7 +48,7 @@ public class JobDao {
     }
 
     public Job getJobById(Connection connection, int id) throws SQLException {
-        String SQL = "SELECT job_id, job_title, job_spec_summary, job_URL " +
+        String SQL = "SELECT job_id, job_title, job_spec_summary, capability.name AS capability, job_URL, job_band_name " +
             "FROM job " +
             "INNER JOIN job_band USING (job_band_id)" +
             "INNER JOIN capability USING (capability_id)" +
