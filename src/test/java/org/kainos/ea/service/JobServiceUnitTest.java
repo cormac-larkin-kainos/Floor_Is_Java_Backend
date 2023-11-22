@@ -76,7 +76,7 @@ public class JobServiceUnitTest {
 
     @Test
     void deleteJob_shouldReturnTrue_IfJobIdFound() throws SQLException, FailedtoDeleteException {
-        Job sampleJob1 = new Job(1, "Software Engineer", "Develops, tests, and maintains software applications, collaborates with cross-functional teams, and follows best practices to deliver efficient and reliable software solutions.", "https://kainossoftwareltd.sharepoint.com/people/Job%20Specifications/Forms/AllItems.aspx?id=%2Fpeople%2FJob%20Specifications%2FEngineering%2FJob%20profile%20%2D%20Software%20Engineer%20%28Associate%29%2Epdf&parent=%2Fpeople%2FJob%20Specifications%2FEngineering&p=true&ga=1");
+        Job sampleJob1 = new Job(1, "Software Engineer","Capbility", "Develops, tests, and maintains software applications, collaborates with cross-functional teams, and follows best practices to deliver efficient and reliable software solutions.", "https://kainossoftwareltd.sharepoint.com/people/Job%20Specifications/Forms/AllItems.aspx?id=%2Fpeople%2FJob%20Specifications%2FEngineering%2FJob%20profile%20%2D%20Software%20Engineer%20%28Associate%29%2Epdf&parent=%2Fpeople%2FJob%20Specifications%2FEngineering&p=true&ga=1","Trainee");
         Mockito.when(databaseConnector.getConnection()).thenReturn(connection);
         Mockito.when(jobDao.getJobById(connection,-1)).thenReturn(sampleJob1);
         Mockito.doNothing().when(jobDao).deleteJob(isA(Connection.class),isA(Integer.class));

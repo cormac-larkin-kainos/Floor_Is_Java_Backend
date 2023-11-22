@@ -73,8 +73,10 @@ public class JobDao {
             return new Job(
                     results.getInt("job_id"),
                     results.getString("job_title"),
+                    results.getString("capability"),
                     results.getString("job_spec_summary"),
-                    results.getString("job_url")
+                    results.getString("job_url"),
+                    results.getString("job_band_name")
             );
         }
 
