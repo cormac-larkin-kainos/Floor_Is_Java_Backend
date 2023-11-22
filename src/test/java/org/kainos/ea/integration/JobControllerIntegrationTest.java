@@ -26,8 +26,8 @@ public class JobControllerIntegrationTest {
             new ResourceConfigurationSourceProvider()
     );
 
-    private static final String VALID_USERNAME = System.getenv("TEST_USERNAME");
-    private static final String VALID_PASSWORD = System.getenv("TEST_PASSWORD");
+    private static final String VALID_USERNAME = System.getenv("TEST_VALID_ADMIN_USERNAME");
+    private static final String VALID_PASSWORD = System.getenv("TEST_VALID_ADMIN_PASSWORD");
 
     private String getJWT() {
         if(VALID_USERNAME == null || VALID_PASSWORD == null){
