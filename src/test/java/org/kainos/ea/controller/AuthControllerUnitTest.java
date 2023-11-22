@@ -1,7 +1,7 @@
 package org.kainos.ea.controller;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.kainos.ea.cli.AuthenticationException;
+import org.kainos.ea.exception.AuthenticationException;
 import org.kainos.ea.cli.Login;
 import org.kainos.ea.api.AuthService;
 import org.kainos.ea.exception.FailedToGenerateTokenException;

@@ -4,7 +4,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kainos.ea.api.AuthService;
 import org.kainos.ea.auth.JwtGenerator;
-import org.kainos.ea.cli.AuthenticationException;
+import org.kainos.ea.auth.JwtValidator;
+import org.kainos.ea.cli.UserRole;
+import org.kainos.ea.exception.AuthenticationException;
 import org.kainos.ea.cli.HashedPassword;
 import org.kainos.ea.cli.Login;
 import org.kainos.ea.db.AuthDao;
@@ -31,8 +33,12 @@ public class AuthServiceUnitTest {
 
     IAuthSource authDao = Mockito.mock(AuthDao.class);
     JwtGenerator jwtGenerator = Mockito.mock(JwtGenerator.class);
+    JwtValidator jwtValidator = Mockito.mock(JwtValidator.class);
 
-    AuthService authService = new AuthService(authDao, jwtGenerator);
+    AuthService authService = new AuthService(authDao, jwtGenerator,jwtValidator);
+
+    private static String VALID_USERNAME = System.getenv("TEST_USERNAME");
+    private static String VALID_PASSWORD = System.getenv("TEST_PASSWORD");
 
     private static byte[] generateSalt() {
         SecureRandom random = new SecureRandom();
@@ -59,15 +65,16 @@ public class AuthServiceUnitTest {
     @Test
     void login_ShouldGenerateToken_WhenLoggedInWithValidCredentials() throws SQLException, FailedToGenerateTokenException, FailedToLoginException, InvalidCredentialsException, AuthenticationException {
 
-        Login testLogin = new Login("admin","admin");
+        Login testLogin = new Login(VALID_USERNAME,VALID_PASSWORD);
 
         HashedPassword hashedPassword = generateHashForPassword(testLogin.getPassword());
 
         Mockito.when(authDao.getPasswordForUser(testLogin.getUsername())).thenReturn(hashedPassword);
 
         // Check that a JWT is returned from the authService after a successful login
-        String jwt = "This is a sample JWT";
-        Mockito.when(jwtGenerator.generateJwt(testLogin.getUsername())).thenReturn(jwt);
+        String jwt = "TEST.TEST.TEST";
+        Mockito.when(jwtGenerator.generateJwt(testLogin.getUsername(), UserRole.User)).thenReturn(jwt);
+        Mockito.when(authDao.getRoleForUser(testLogin.getUsername())).thenReturn(UserRole.User);
         assertEquals(jwt, authService.login(testLogin));
     }
 
@@ -82,7 +89,7 @@ public class AuthServiceUnitTest {
 
     @Test
     void login_shouldThrowAuthenticationException_whenDAOThrowsAuthenticationException() throws AuthenticationException {
-        Login testLogin = new Login("admin","admin");
+        Login testLogin = new Login(VALID_USERNAME,VALID_PASSWORD);
         Mockito.when(authDao.getPasswordForUser(testLogin.getUsername())).thenThrow(AuthenticationException.class);
         assertThrows(AuthenticationException.class, () -> authService.login(testLogin));
     }
