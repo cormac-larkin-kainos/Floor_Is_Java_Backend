@@ -1,0 +1,28 @@
+name: Daily Performance Tests
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Scheduled for midnight
+
+jobs:
+  performance:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Setup JMeter
+        run: |
+          wget https://downloads.apache.org/jmeter/binaries/apache-jmeter-5.4.1.tgz
+          tar -xzf apache-jmeter-5.4.1.tgz
+
+      - name: Run JMeter Performance Test
+        run: |
+          ./apache-jmeter-5.4.1/bin/jmeter -n -t scripts/performance-test.jmx -l reports/result.jtl
+
+      - name: Save Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: jmeter-results
+          path: reports/result.jtl
