@@ -53,12 +53,11 @@ public class JobRequest {
 
     @JsonCreator
     public JobRequest(
-         @JsonProperty("title") String title,
-         @JsonProperty("capabilityID") int capabilityID,
-         @JsonProperty("jobSpec") String jobSpec,
-         @JsonProperty("jobURL") String jobURL,
-         @JsonProperty("jobBandID") int jobBandID) {
-
+            @JsonProperty("title") String title,
+            @JsonProperty("capabilityID") int capabilityID,
+            @JsonProperty("jobSpec") String jobSpec,
+            @JsonProperty("jobURL") String jobURL,
+            @JsonProperty("jobBandID") int jobBandID) {
         this.title = title;
         this.capabilityID = capabilityID;
         this.jobSpec = jobSpec;

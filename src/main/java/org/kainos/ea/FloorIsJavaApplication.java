@@ -22,17 +22,17 @@ import org.kainos.ea.db.AuthDao;
 import org.kainos.ea.resources.AuthorisationFilter;
 import org.kainos.ea.resources.AuthController;
 import org.kainos.ea.resources.JobController;
-import java.security.NoSuchAlgorithmException;
+import org.kainos.ea.resources.ResponsibilityController;
 
 @SwaggerDefinition(
-        securityDefinition = @SecurityDefinition(
-                apiKeyAuthDefinitions = {
-                        @ApiKeyAuthDefinition(
-                                key = "basicAuth",
-                                name = "Authorization",
-                                in = ApiKeyAuthDefinition.ApiKeyLocation.HEADER)
-                }
-        )
+    securityDefinition = @SecurityDefinition(
+        apiKeyAuthDefinitions = {
+            @ApiKeyAuthDefinition(
+                key = "basicAuth",
+                name = "Authorization",
+                in = ApiKeyAuthDefinition.ApiKeyLocation.HEADER)
+        }
+    )
 )
 public class FloorIsJavaApplication extends Application<FloorIsJavaConfiguration> {
 
@@ -66,6 +66,6 @@ public class FloorIsJavaApplication extends Application<FloorIsJavaConfiguration
         environment.jersey().register(new JobController(jobService));
         environment.jersey().register(new CapabilityController());
         environment.jersey().register(new JobBandController());
+        environment.jersey().register(new ResponsibilityController());
     }
-
 }

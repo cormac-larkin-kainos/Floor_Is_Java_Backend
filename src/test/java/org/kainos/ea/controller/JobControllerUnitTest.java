@@ -1,15 +1,16 @@
 package org.kainos.ea.controller;
 
+import javassist.NotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.kainos.ea.api.JobService;
 import org.kainos.ea.cli.Job;
 import org.kainos.ea.cli.JobRequest;
 import org.kainos.ea.exception.FailedToGetJobsException;
+import org.kainos.ea.exception.FailedtoDeleteException;
 import org.kainos.ea.exception.ProjectException;
 import org.kainos.ea.resources.JobController;
 import org.mockito.Mockito;
-
 import javax.ws.rs.core.Response;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -27,6 +28,15 @@ public class JobControllerUnitTest {
             "https://google.com",
             1);
     JobController jobController = new JobController(jobService);
+
+    private final Job sampleJob1 = new Job(
+            1,
+            "Software Engineer",
+            "Engineering",
+            "Develops, tests, and maintains software applications, collaborates with cross-functional teams, and follows best practices to deliver efficient and reliable software solutions.",
+            "https://kainossoftwareltd.sharepoint.com/people/Job%20Specifications/Forms/AllItems.aspx?id=%2Fpeople%2FJob%20Specifications%2FEngineering%2FJob%20profile%20%2D%20Software%20Engineer%20%28Associate%29%2Epdf&parent=%2Fpeople%2FJob%20Specifications%2FEngineering&p=true&ga=1",
+            "Trainee"
+    );
 
     @Test
     void getAllJobs_shouldReturn200StatusCodeAndListOfJobs_whenServiceReturnsListOfJobs() throws FailedToGetJobsException {
@@ -85,5 +95,73 @@ public class JobControllerUnitTest {
         assertEquals(response.getStatus(), expectedStatusCode);
     }
 
+
+    @Test
+    void deleteJob_shouldReturn404_whenJobIdNotFound() throws FailedtoDeleteException, NotFoundException {
+        Mockito.doThrow(NotFoundException.class).when(jobService).delete(-1);
+        JobController jobController = new JobController(jobService);
+
+        Response response = jobController.deleteJob("-1");
+
+        Assertions.assertEquals(404,response.getStatus());
+    }
+
+    @Test
+    void deleteJob_shouldReturn500_whenFailedToDeleteExceptionThrown() throws FailedtoDeleteException, NotFoundException {
+        Mockito.doThrow(FailedtoDeleteException.class).when(jobService).delete(-1);
+        JobController jobController = new JobController(jobService);
+
+        Response response = jobController.deleteJob("-1");
+
+        Assertions.assertEquals(500,response.getStatus());
+    }
+
+    @Test
+    void deleteJob_shouldReturn400_whenBadIdPassed() {
+        JobController jobController = new JobController(jobService);
+
+        Response response = jobController.deleteJob("This is a bad id");
+        Assertions.assertEquals(400,response.getStatus());
+    }
+
+    @Test
+    void deleteJob_shouldReturn400_whenNoPassed() {
+        JobController jobController = new JobController(jobService);
+
+        Response response = jobController.deleteJob(null);
+        Assertions.assertEquals(400,response.getStatus());
+    }
+
+    @Test
+    void deleteJob_shouldReturn200_whenValidJobIdPassed() throws FailedtoDeleteException, NotFoundException {
+        Mockito.doNothing().when(jobService).delete(1);
+        JobController jobController = new JobController(jobService);
+        Response response = jobController.deleteJob("1");
+
+        Assertions.assertEquals(200,response.getStatus());
+    }
+
+    @Test
+    void getJobById_shouldReturn200andJob_whenValidIdPassed() throws FailedToGetJobsException {
+        Mockito.when(jobService.getById(1)).thenReturn(sampleJob1);
+        JobController controller = new JobController(jobService);
+        Response response = controller.getJob("1");
+        Assertions.assertEquals(200,response.getStatus());
+    }
+
+    @Test
+    void getJobById_shouldReturn404_whenNonExistantIdPassed() throws FailedToGetJobsException, NotFoundException {
+        Mockito.when(jobService.getById(-1)).thenReturn(null);
+        JobController controller = new JobController(jobService);
+        Response response = controller.getJob("-1");
+        Assertions.assertEquals(404,response.getStatus());
+    }
+
+    @Test
+    void getJobById_shouldReturn400_whenInvalidId() {
+        JobController controller = new JobController(jobService);
+        Response response = controller.getJob("This is invalid");
+        Assertions.assertEquals(400,response.getStatus());
+    }
 
 }
