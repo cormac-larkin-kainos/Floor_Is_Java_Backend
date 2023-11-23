@@ -12,12 +12,6 @@ public class JobDao {
 
     public List<Job> getAllJobs(Connection connection) throws SQLException {
 
-        // Check database connection
-        if (connection == null) {
-            System.err.println("Failed to connect to database");
-            throw new SQLException("Failed to connect to database");
-        }
-
         // Query the database for all jobs
         String selectQuery = "SELECT job_id, job_title, job_spec_summary, capability.name AS capability, job_URL, job_band_name" +
                 " FROM job " +
@@ -53,18 +47,6 @@ public class JobDao {
             "WHERE job_id = ?";
 
 
-        // Check database connection
-        if (connection == null) {
-            System.err.println("Failed to connect to database");
-            throw new SQLException("Failed to connect to database");
-        }
-
-
-        if(connection.isClosed()){
-            System.err.println("Database connection was closed");
-            throw new SQLException("Database connection was closed");
-        }
-
         PreparedStatement statement = connection.prepareStatement(SQL);
         statement.setInt(1,id);
         ResultSet results = statement.executeQuery();
@@ -86,11 +68,6 @@ public class JobDao {
     }
 
     public int createJobRole(JobRequest job, Connection connection) throws SQLException{
-        // Check database connection
-        if (connection == null) {
-            System.err.println("Failed to connect to database");
-            throw new SQLException("Failed to connect to database");
-        }
         String insertStatement = "INSERT INTO `job` (`job_title`, `job_spec_summary`, `job_url`, `capability_id`, `job_band_id`) VALUES (?,?,?,?,?)";
 
         PreparedStatement st = connection.prepareStatement(insertStatement, Statement.RETURN_GENERATED_KEYS);
