@@ -59,7 +59,7 @@ public class JobServiceUnitTest {
 
     @Test
     void getAllJobs_shouldThrowFailedToGetJobsException_whenDatabaseConnectorThrowsSQLException() throws SQLException {
-        Mockito.when(databaseConnector.getConnection()).thenReturn(connection);
+        Mockito.when(databaseConnector.getConnection()).thenThrow(SQLException.class);
         Mockito.when(jobDao.getJobById(connection,-1)).thenReturn(null);
 
         assertThrows(FailedToGetJobsException.class,
