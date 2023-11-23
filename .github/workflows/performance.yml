@@ -8,6 +8,10 @@ jobs:
   performance:
     runs-on: ubuntu-latest
 
+    env:
+      TEST_VALID_ADMIN_USERNAME: ${{ secrets.TEST_VALID_ADMIN_USERNAME }}
+      TEST_VALID_ADMIN_PASSWORD: ${{ secrets.TEST_VALID_ADMIN_PASSWORD }}
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
@@ -19,10 +23,12 @@ jobs:
 
       - name: Run JMeter Performance Test
         run: |
-          ./apache-jmeter-5.4.1/bin/jmeter -n -t scripts/performance-test.jmx -l reports/result.jtl
+          timestamp=$(date +%Y%m%d%H%M%S)
+          result_file="reports/result_${timestamp}.jtl"
+          ./apache-jmeter-5.4.1/bin/jmeter -n -t scripts/api-performance-test.jmx -l "${result_file}" -JTEST_VALID_ADMIN_USERNAME=$TEST_VALID_ADMIN_USERNAME -JTEST_VALID_ADMIN_PASSWORD=$TEST_VALID_ADMIN_PASSWORD
 
       - name: Save Artifacts
         uses: actions/upload-artifact@v2
         with:
           name: jmeter-results
-          path: reports/result.jtl
+          path: "${result_file}"
