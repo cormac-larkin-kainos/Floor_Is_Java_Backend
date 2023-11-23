@@ -100,4 +100,35 @@ public class JobServiceUnitTest {
             jobService.delete(-1);
         });
     }
+
+    @Test
+    void getJobById_shouldReturnValidJob_whenDAOReturnsJobById() throws SQLException, FailedToGetJobsException {
+        Job sampleJob1 = new Job(1, "Software Engineer", "Engineering", "Develops, tests, and maintains software applications, collaborates with cross-functional teams, and follows best practices to deliver efficient and reliable software solutions.", "https://kainossoftwareltd.sharepoint.com/people/Job%20Specifications/Forms/AllItems.aspx?id=%2Fpeople%2FJob%20Specifications%2FEngineering%2FJob%20profile%20%2D%20Software%20Engineer%20%28Associate%29%2Epdf&parent=%2Fpeople%2FJob%20Specifications%2FEngineering&p=true&ga=1", "Trainee");
+
+        Mockito.when(databaseConnector.getConnection()).thenReturn(connection);
+        Mockito.when(jobDao.getJobById(connection,sampleJob1.getJobID())).thenReturn(sampleJob1);
+
+        Job job = jobService.getById(sampleJob1.getJobID());
+
+        assertEquals(sampleJob1.getJobID(),job.getJobID());
+    }
+
+    @Test
+    void getJobById_shouldReturnNull_whenDAOReturnsNull() throws SQLException, FailedToGetJobsException {
+        Mockito.when(databaseConnector.getConnection()).thenReturn(connection);
+        Mockito.when(jobDao.getJobById(connection,-1)).thenReturn(null);
+
+        Job job = jobService.getById(-1);
+
+        assertNull(job);
+    }
+
+    @Test
+    void getJobById_shouldThrowFailedToGetJobsException_whenDAOthrowsSQLException() throws SQLException {
+        Mockito.when(databaseConnector.getConnection()).thenThrow(SQLException.class);
+
+        assertThrows(FailedToGetJobsException.class,() -> {
+            jobService.getById(-1);
+        });
+    }
 }
