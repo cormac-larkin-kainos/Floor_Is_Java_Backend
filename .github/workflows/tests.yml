@@ -38,6 +38,8 @@ jobs:
           DB_NAME: ${{ secrets.DB_NAME }}
           TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
           TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+          TEST_VALID_ADMIN_USERNAME: ${{ secrets.TEST_VALID_ADMIN_USERNAME }}
+          TEST_VALID_ADMIN_PASSWORD: ${{ secrets.TEST_VALID_ADMIN_PASSWORD }}
         run: mvn clean test --file pom.xml
 
       - name: Run Integration Tests
@@ -48,5 +50,7 @@ jobs:
           DB_NAME: ${{ secrets.DB_NAME }}
           TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
           TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+          TEST_VALID_ADMIN_USERNAME: ${{ secrets.TEST_VALID_ADMIN_USERNAME }}
+          TEST_VALID_ADMIN_PASSWORD: ${{ secrets.TEST_VALID_ADMIN_PASSWORD }}
         run: mvn integration-test --file pom.xml
 
