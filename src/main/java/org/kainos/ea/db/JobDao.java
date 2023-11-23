@@ -2,8 +2,6 @@ package org.kainos.ea.db;
 
 import org.kainos.ea.cli.Job;
 import org.kainos.ea.cli.JobRequest;
-import org.kainos.ea.exception.FailedtoDeleteException;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,34 +37,6 @@ public class JobDao {
         return allJobs;
     }
 
-    public Job getJobById(Connection connection, int id) throws SQLException {
-        String SQL = "SELECT job_id, job_title, job_spec_summary, capability.name AS capability, job_URL, job_band_name " +
-            "FROM job " +
-            "INNER JOIN job_band USING (job_band_id)" +
-            "INNER JOIN capability USING (capability_id)" +
-            "WHERE job_id = ?";
-
-
-        PreparedStatement statement = connection.prepareStatement(SQL);
-        statement.setInt(1,id);
-        ResultSet results = statement.executeQuery();
-
-        // Create a list of Job objects from the results
-
-        if (results.next()) {
-            return new Job(
-                    results.getInt("job_id"),
-                    results.getString("job_title"),
-                    results.getString("capability"),
-                    results.getString("job_spec_summary"),
-                    results.getString("job_url"),
-                    results.getString("job_band_name")
-            );
-        }
-
-        return null;
-    }
-
     public int createJobRole(JobRequest job, Connection connection) throws SQLException{
         String insertStatement = "INSERT INTO `job` (`job_title`, `job_spec_summary`, `job_url`, `capability_id`, `job_band_id`) VALUES (?,?,?,?,?)";
 
@@ -87,6 +57,35 @@ public class JobDao {
             return rs.getInt(1);
         }
         return -1;
+    }
+
+
+    public Job getJobById(Connection connection, int id) throws SQLException {
+        String SQL = "SELECT job_id, job_title, job_spec_summary, capability.name AS capability, job_URL, job_band_name " +
+                "FROM job " +
+                "INNER JOIN job_band USING (job_band_id)" +
+                "INNER JOIN capability USING (capability_id)" +
+                "WHERE job_id = ?";
+
+
+        PreparedStatement statement = connection.prepareStatement(SQL);
+        statement.setInt(1,id);
+        ResultSet results = statement.executeQuery();
+
+        // Create a list of Job objects from the results
+
+        if (results.next()) {
+            return new Job(
+                    results.getInt("job_id"),
+                    results.getString("job_title"),
+                    results.getString("capability"),
+                    results.getString("job_spec_summary"),
+                    results.getString("job_url"),
+                    results.getString("job_band_name")
+            );
+        }
+
+        return null;
     }
 
     public void deleteJob(Connection connection, int id) throws SQLException {

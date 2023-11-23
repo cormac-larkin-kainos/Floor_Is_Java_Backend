@@ -5,6 +5,12 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.federecio.dropwizard.swagger.SwaggerBundle;
 import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
+import org.kainos.ea.api.JobService;
+import org.kainos.ea.core.JobValidator;
+import org.kainos.ea.db.DatabaseConnector;
+import org.kainos.ea.db.JobDao;
+import org.kainos.ea.resources.CapabilityController;
+import org.kainos.ea.resources.JobBandController;
 import io.swagger.annotations.ApiKeyAuthDefinition;
 import io.swagger.annotations.SecurityDefinition;
 import io.swagger.annotations.SwaggerDefinition;
@@ -17,8 +23,6 @@ import org.kainos.ea.resources.AuthorisationFilter;
 import org.kainos.ea.resources.AuthController;
 import org.kainos.ea.resources.JobController;
 import org.kainos.ea.resources.ResponsibilityController;
-
-import java.security.NoSuchAlgorithmException;
 
 @SwaggerDefinition(
     securityDefinition = @SecurityDefinition(
@@ -55,11 +59,13 @@ public class FloorIsJavaApplication extends Application<FloorIsJavaConfiguration
 
     @Override
     public void run(final FloorIsJavaConfiguration configuration,
-                    final Environment environment) throws NoSuchAlgorithmException {
+                    final Environment environment) {
+        JobService jobService = new JobService(new JobDao(),new DatabaseConnector(),new JobValidator());
         environment.jersey().register(new AuthController(authService));
         environment.jersey().register(new AuthorisationFilter(authService));
-
-        environment.jersey().register(new JobController());
+        environment.jersey().register(new JobController(jobService));
+        environment.jersey().register(new CapabilityController());
+        environment.jersey().register(new JobBandController());
         environment.jersey().register(new ResponsibilityController());
     }
 }

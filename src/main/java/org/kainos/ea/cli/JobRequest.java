@@ -58,7 +58,6 @@ public class JobRequest {
             @JsonProperty("jobSpec") String jobSpec,
             @JsonProperty("jobURL") String jobURL,
             @JsonProperty("jobBandID") int jobBandID) {
-
         this.title = title;
         this.capabilityID = capabilityID;
         this.jobSpec = jobSpec;

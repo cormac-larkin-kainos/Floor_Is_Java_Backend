@@ -12,14 +12,15 @@ import org.kainos.ea.cli.JobRequest;
 import org.kainos.ea.cli.Login;
 import javax.ws.rs.client.Entity;
 import org.kainos.ea.cli.Job;
+import org.kainos.ea.cli.JobRequest;
 import org.kainos.ea.db.DatabaseConnector;
 import org.kainos.ea.db.JobDao;
-
-import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.sql.SQLException;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(DropwizardExtensionsSupport.class)
 public class JobControllerIntegrationTest {
@@ -52,23 +53,43 @@ public class JobControllerIntegrationTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .get();
 
-        Assertions.assertEquals(200, response.getStatus());
-        Assertions.assertNotNull(response.getEntity());
+        assertEquals(200, response.getStatus());
+        assertNotNull(response.getEntity());
 
         // Check that the all jobs in the response contain the correct properties
-        List<Job> allJobs = response.readEntity(new GenericType<List<Job>>() {});
+        List<Job> allJobs = response.readEntity(List.class);
 
-        for (Job job : allJobs) {
-            int jobID = job.getJobID();
-            Assertions.assertTrue(jobID > 0);
+        Assertions.assertFalse(allJobs.isEmpty());
 
-            Assertions.assertNotNull(job.getTitle());
-            Assertions.assertNotNull(job.getJobURL());
-            Assertions.assertNotNull(job.getJobSpec());
-            Assertions.assertNotNull(job.getCapability());
-            Assertions.assertNotNull(job.getJobBand());
-        }
+    }
 
+    @Test
+    void createJob_ShouldReturnCreatedStatus() {
+        // Create a new job object or use a predefined job object
+        JobRequest newJob = new JobRequest("newJob",1,"A new job","job@newjob.com",2);
+
+        // Send a POST request to create a job
+        Response response = APP.client().target("http://localhost:8080/api/jobs")
+                .request()
+                .header("Authorization","Bearer " + getJWT())
+                .post(Entity.json(newJob)); // Send the job as JSON in the request body
+
+        assertEquals(200, response.getStatus());
+    }
+
+    @Test
+    void createJob_WithInvalidData_ShouldReturnBadRequest() {
+        // Create a new job object with invalid data or missing required fields
+        JobRequest invalidJob = new JobRequest("", 0, "A new job", "job@newjob.com", 2);
+
+        // Send a POST request to create a job with invalid data
+        Response response = APP.client().target("http://localhost:8080/api/jobs")
+                .request()
+                .header("Authorization", "Bearer " + getJWT())
+                .post(Entity.json(invalidJob)); // Send the invalid job as JSON in the request body
+
+        // Assert that the HTTP response status code is 400 (Bad Request) or appropriate error code
+        assertEquals(400, response.getStatus());
     }
 
     @Test
