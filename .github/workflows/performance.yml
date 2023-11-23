@@ -26,9 +26,10 @@ jobs:
           timestamp=$(date +%Y%m%d%H%M%S)
           result_file="reports/result_${timestamp}.jtl"
           ./apache-jmeter-5.4.1/bin/jmeter -n -t scripts/api-performance-test.jmx -l "${result_file}" -JTEST_VALID_ADMIN_USERNAME=$TEST_VALID_ADMIN_USERNAME -JTEST_VALID_ADMIN_PASSWORD=$TEST_VALID_ADMIN_PASSWORD
+          echo "RESULT_FILE=${result_file}" >> $GITHUB_ENV
 
       - name: Save Artifacts
         uses: actions/upload-artifact@v2
         with:
           name: jmeter-results
-          path: "${result_file}"
+          path: "${{ env.RESULT_FILE }}"
