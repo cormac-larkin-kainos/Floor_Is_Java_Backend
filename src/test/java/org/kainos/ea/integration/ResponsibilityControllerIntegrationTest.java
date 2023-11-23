@@ -39,7 +39,7 @@ public class ResponsibilityControllerIntegrationTest {
 
     @Test
     void getResponsibilitiesForJob_ShouldReturnListOfResponsibilitiesForJob() {
-        int jobId = 1;
+        int jobId = 5;
 
         Response response = APP.client().target("http://localhost:8080/api/jobs/" + jobId + "/responsibilities")
                 .request()
