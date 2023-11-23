@@ -48,8 +48,8 @@ public class JobControllerUnitTest {
 
         Response response = jobController.getAllJobs();
 
-        Assertions.assertEquals(response.getStatus(), 500);
-        Assertions.assertEquals(response.getEntity(), "A database error occurred, failed to get jobs");
+        Assertions.assertEquals(500,response.getStatus());
+        Assertions.assertEquals("A database error occurred, failed to get jobs",response.getEntity());
          }
 
     @Test
@@ -59,7 +59,7 @@ public class JobControllerUnitTest {
 
         Response response = jobController.deleteJob("-1");
 
-        Assertions.assertEquals(response.getStatus(),404);
+        Assertions.assertEquals(404,response.getStatus());
     }
 
     @Test
@@ -69,7 +69,7 @@ public class JobControllerUnitTest {
 
         Response response = jobController.deleteJob("-1");
 
-        Assertions.assertEquals(response.getStatus(),500);
+        Assertions.assertEquals(500,response.getStatus());
     }
 
     @Test
@@ -77,7 +77,7 @@ public class JobControllerUnitTest {
         JobController jobController = new JobController(jobService);
 
         Response response = jobController.deleteJob("This is a bad id");
-        Assertions.assertEquals(response.getStatus(),400);
+        Assertions.assertEquals(400,response.getStatus());
     }
 
     @Test
@@ -85,7 +85,16 @@ public class JobControllerUnitTest {
         JobController jobController = new JobController(jobService);
 
         Response response = jobController.deleteJob(null);
-        Assertions.assertEquals(response.getStatus(),400);
+        Assertions.assertEquals(400,response.getStatus());
+    }
+
+    @Test
+    void deleteJob_shouldReturn200_whenValidJobIdPassed() throws FailedtoDeleteException, NotFoundException {
+        Mockito.doNothing().when(jobService).delete(1);
+        JobController jobController = new JobController(jobService);
+        Response response = jobController.deleteJob("1");
+
+        Assertions.assertEquals(200,response.getStatus());
     }
 
 }
