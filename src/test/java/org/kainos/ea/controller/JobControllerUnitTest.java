@@ -1,5 +1,6 @@
 package org.kainos.ea.controller;
 
+import javassist.NotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.kainos.ea.api.JobService;
@@ -52,8 +53,8 @@ public class JobControllerUnitTest {
          }
 
     @Test
-    void deleteJob_shouldReturn404_whenJobIdNotFound() throws FailedtoDeleteException {
-        Mockito.when(jobService.delete(-1)).thenReturn(false);
+    void deleteJob_shouldReturn404_whenJobIdNotFound() throws FailedtoDeleteException, NotFoundException {
+        Mockito.doThrow(NotFoundException.class).when(jobService).delete(-1);
         JobController jobController = new JobController(jobService);
 
         Response response = jobController.deleteJob("-1");
@@ -62,8 +63,8 @@ public class JobControllerUnitTest {
     }
 
     @Test
-    void deleteJob_shouldReturn500_whenFailedToDeleteExceptionThrown() throws FailedtoDeleteException  {
-        Mockito.when(jobService.delete(-1)).thenThrow(FailedtoDeleteException.class);
+    void deleteJob_shouldReturn500_whenFailedToDeleteExceptionThrown() throws FailedtoDeleteException, NotFoundException {
+        Mockito.doThrow(FailedtoDeleteException.class).when(jobService).delete(-1);
         JobController jobController = new JobController(jobService);
 
         Response response = jobController.deleteJob("-1");

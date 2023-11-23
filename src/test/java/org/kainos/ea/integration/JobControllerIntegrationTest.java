@@ -8,25 +8,31 @@ import org.kainos.ea.FloorIsJavaConfiguration;
 import io.dropwizard.testing.junit5.DropwizardAppExtension;
 import io.dropwizard.testing.junit5.DropwizardExtensionsSupport;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.kainos.ea.cli.JobRequest;
 import org.kainos.ea.cli.Login;
 import javax.ws.rs.client.Entity;
 import org.kainos.ea.cli.Job;
+import org.kainos.ea.db.DatabaseConnector;
+import org.kainos.ea.db.JobDao;
 
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.sql.SQLException;
 import java.util.List;
 
 @ExtendWith(DropwizardExtensionsSupport.class)
 public class JobControllerIntegrationTest {
+
+    private static final JobDao jobDao = new JobDao();
 
     static final DropwizardAppExtension<FloorIsJavaConfiguration> APP = new DropwizardAppExtension<>(
             FloorIsJavaApplication.class, null,
             new ResourceConfigurationSourceProvider()
     );
 
-    private static final String VALID_USERNAME = System.getenv("TEST_USERNAME");
-    private static final String VALID_PASSWORD = System.getenv("TEST_PASSWORD");
+    private static final String VALID_USERNAME = System.getenv("TEST_VALID_ADMIN_USERNAME");
+    private static final String VALID_PASSWORD = System.getenv("TEST_VALID_ADMIN_PASSWORD");
 
     private String getJWT() {
         if(VALID_USERNAME == null || VALID_PASSWORD == null){
@@ -63,6 +69,27 @@ public class JobControllerIntegrationTest {
             Assertions.assertNotNull(job.getJobBand());
         }
 
+    }
+
+    @Test
+    void deleteJob_shouldDeleteJob() throws SQLException {
+        JobRequest request = new JobRequest(
+                "Test Job, to be deleted",
+                1,
+                "This job will be deleted",
+                "www.thiswillbeeleted.com",
+                1
+        );
+
+        int id = jobDao.createJobRole(request, new DatabaseConnector().getConnection());
+
+        Response response = APP.client().target("http://localhost:8080/api/jobs/" + id)
+            .request()
+            .header("Authorization","Bearer " + getJWT())
+            .accept(MediaType.APPLICATION_JSON)
+            .delete();
+
+        Assertions.assertEquals(200,response.getStatus());
     }
 
 }

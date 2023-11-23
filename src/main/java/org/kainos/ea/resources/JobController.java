@@ -1,6 +1,7 @@
 package org.kainos.ea.resources;
 
 import io.swagger.annotations.*;
+import javassist.NotFoundException;
 import org.kainos.ea.api.JobService;
 import org.kainos.ea.cli.Authorised;
 import org.kainos.ea.cli.Job;
@@ -87,9 +88,7 @@ public class JobController {
     public Response deleteJob(@PathParam("id") String id) {
         try {
             int convertedId = Integer.parseInt(id);
-            if(!jobService.delete(convertedId)) {
-                return Response.status(Response.Status.NOT_FOUND).build();
-            }
+            jobService.delete(convertedId);
             return Response.ok().build();
         } catch (FailedtoDeleteException e) {
             System.err.println(e.getMessage());
@@ -97,6 +96,8 @@ public class JobController {
         } catch (NumberFormatException e){
             System.err.println(e.getMessage());
             return Response.status(Response.Status.BAD_REQUEST).build();
+        } catch (NotFoundException e){
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
 }
