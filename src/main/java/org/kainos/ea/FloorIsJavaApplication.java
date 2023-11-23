@@ -21,14 +21,14 @@ import org.kainos.ea.resources.ResponsibilityController;
 import java.security.NoSuchAlgorithmException;
 
 @SwaggerDefinition(
-        securityDefinition = @SecurityDefinition(
-                apiKeyAuthDefinitions = {
-                        @ApiKeyAuthDefinition(
-                                key = "basicAuth",
-                                name = "Authorization",
-                                in = ApiKeyAuthDefinition.ApiKeyLocation.HEADER)
-                }
-        )
+    securityDefinition = @SecurityDefinition(
+        apiKeyAuthDefinitions = {
+            @ApiKeyAuthDefinition(
+                key = "basicAuth",
+                name = "Authorization",
+                in = ApiKeyAuthDefinition.ApiKeyLocation.HEADER)
+        }
+    )
 )
 public class FloorIsJavaApplication extends Application<FloorIsJavaConfiguration> {
 
