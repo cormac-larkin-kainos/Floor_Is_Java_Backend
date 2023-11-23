@@ -66,13 +66,13 @@ public class AuthorisationFilter implements ContainerRequestFilter {
 
         String authorisationHeader = containerRequestContext.getHeaderString("Authorization");
         if (authorisationHeader == null) {
-            containerRequestContext.abortWith(Response.status(Response.Status.BAD_REQUEST).build());
+            containerRequestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
             return;
         }
 
         String encodedJWT = getTokenForHeader(authorisationHeader);
         if (encodedJWT == null) {
-            containerRequestContext.abortWith(Response.status(Response.Status.BAD_REQUEST).build());
+            containerRequestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
             return;
         }
 

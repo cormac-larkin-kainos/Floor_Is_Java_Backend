@@ -53,12 +53,12 @@ public class AuthorisationFilterIntegrationTest {
     }
 
     @Test
-    void shouldReturn400_whenNoAuthHeaderPassed() {
+    void shouldReturn401_whenNoAuthHeaderPassed() {
         Response response = APP.client().target("http://localhost:8080/api/jobs")
                 .request()
                 .get();
 
-        Assertions.assertEquals(400,response.getStatus());
+        Assertions.assertEquals(401,response.getStatus());
     }
 
     @Test
@@ -78,6 +78,6 @@ public class AuthorisationFilterIntegrationTest {
                 .request()
                 .header("Authorization","")
                 .get();
-        Assertions.assertEquals(400,response.getStatus());
+        Assertions.assertEquals(401,response.getStatus());
     }
 }
