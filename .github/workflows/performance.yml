@@ -2,7 +2,7 @@ name: Daily Performance Tests
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # Scheduled for midnight
+    - cron: '30 13 * * *'  # Scheduled for midnight
 
 jobs:
   performance:
