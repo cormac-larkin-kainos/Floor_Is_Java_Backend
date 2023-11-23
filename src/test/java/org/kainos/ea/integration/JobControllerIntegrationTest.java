@@ -92,4 +92,74 @@ public class JobControllerIntegrationTest {
         Assertions.assertEquals(200,response.getStatus());
     }
 
+    @Test
+    void deleteJob_shouldReturn404_ifIDNotFound() {
+        int jobId = -1;
+        Response response = APP.client().target("http://localhost:8080/api/jobs/" + jobId)
+                .request()
+                .header("Authorization","Bearer " + getJWT())
+                .accept(MediaType.APPLICATION_JSON)
+                .delete();
+
+        Assertions.assertEquals(404,response.getStatus());
+    }
+
+    @Test
+    void deleteJob_shouldReturn400_ifBadIdPassed() {
+        Response response = APP.client().target("http://localhost:8080/api/jobs/" + "This is definitely not a number")
+                .request()
+                .header("Authorization","Bearer " + getJWT())
+                .accept(MediaType.APPLICATION_JSON)
+                .delete();
+
+        Assertions.assertEquals(400,response.getStatus());
+    }
+
+    @Test
+    void getJobById_shouldReturn200andJob_whenValidIdPassed() {
+        Response response = APP.client().target("http://localhost:8080/api/job/" + "5")
+                .request()
+                .header("Authorization","Bearer " + getJWT())
+                .accept(MediaType.APPLICATION_JSON)
+                .get();
+
+        Assertions.assertEquals(200,response.getStatus());
+        Assertions.assertNotNull(response.readEntity(Job.class));
+    }
+
+    @Test
+    void getJobById_shouldReturn404_whenInvalidIdPassed() {
+        Response response = APP.client().target("http://localhost:8080/api/job/" + "-1")
+                .request()
+                .header("Authorization","Bearer " + getJWT())
+                .accept(MediaType.APPLICATION_JSON)
+                .get();
+
+        Assertions.assertEquals(404,response.getStatus());
+        Assertions.assertNotNull(response.readEntity(Job.class));
+    }
+
+    @Test
+    void getJobById_shouldReturn400_whenBadIdPassed() {
+        Response response = APP.client().target("http://localhost:8080/api/job/" + "This is invalid")
+                .request()
+                .header("Authorization","Bearer " + getJWT())
+                .accept(MediaType.APPLICATION_JSON)
+                .get();
+
+        Assertions.assertEquals(400,response.getStatus());
+        Assertions.assertNotNull(response.readEntity(Job.class));
+    }
+
+    @Test
+    void getJobById_shouldReturn400_whenInvalidIdPassed() {
+        Response response = APP.client().target("http://localhost:8080/api/job/")
+                .request()
+                .header("Authorization","Bearer " + getJWT())
+                .accept(MediaType.APPLICATION_JSON)
+                .get();
+
+        Assertions.assertEquals(404,response.getStatus());
+        Assertions.assertNotNull(response.readEntity(Job.class));
+    }
 }
